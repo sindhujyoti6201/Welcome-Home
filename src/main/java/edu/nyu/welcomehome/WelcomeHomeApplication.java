@@ -10,5 +10,4 @@ public class WelcomeHomeApplication {
         System.out.println("Starting the server");
         SpringApplication.run(WelcomeHomeApplication.class, args);
     }
-
 }
