@@ -16,7 +16,7 @@
 
 <main>
     <div class="login-container">
-        <form action="/login" method="POST" class="login-form">
+        <form id="loginForm" class="login-form">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required placeholder="Enter your username">
@@ -31,11 +31,15 @@
                 <button type="submit" class="btn-submit">Login</button>
             </div>
         </form>
+        <!-- Error Message Container -->
+        <div id="errorContainer" style="display: none; color: red; font-weight: bold;"></div>
     </div>
 </main>
 
 <footer>
     <p>&copy; 2024 NGO Portal. All Rights Reserved.</p>
 </footer>
+
+<script src="login.js"></script>
 </body>
 </html>
