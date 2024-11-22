@@ -5,7 +5,9 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface Category {
     String mainCategory();
+
     String subCategory();
+
     String catNotes();
 }
 
