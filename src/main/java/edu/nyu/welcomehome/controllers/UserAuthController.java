@@ -30,9 +30,13 @@ public class UserAuthController {
         logger.info("Registering user " + username + " with password " + password);
     }
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/login",
+            consumes =  MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImmutableLoginResponse> login(
             @RequestBody LoginRequest request) {
+        System.out.println(request.username());
         if (userAuthService.isAuthorizedUser(request.username(), request.password())) {
             ImmutableLoginResponse response = ImmutableLoginResponse.builder()
                     .status("success")
@@ -44,6 +48,7 @@ public class UserAuthController {
                     .status("failure")
                     .message("Invalid username or password")
                     .build();
+            logger.info("Invalid username or password");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
