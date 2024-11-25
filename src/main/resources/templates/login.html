@@ -3,43 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NGO Portal</title>
-    <link rel="stylesheet" href="/css/loginStyles.css"> <!-- Linking the CSS file -->
+    <title>Login/Register</title>
+    <link rel="stylesheet" href="/css/login-styles.css">
 </head>
 <body>
 <header>
-    <div class="container">
-        <h1>NGO Portal - Login</h1>
-        <p>Login to your account to continue.</p>
-    </div>
+    <nav>
+        <div class="logo">The Giving Nest</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+        </ul>
+    </nav>
 </header>
 
-<main>
-    <div class="login-container">
-        <form id="loginForm" class="login-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required placeholder="Enter your username">
-            </div>
+<section class="login-register">
+    <h1>Volunteer Login</h1>
+    <form id="loginForm" class="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username"  placeholder="Enter your username" required>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Enter your password">
-            </div>
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
 
-            <div class="form-group">
-                <button type="submit" class="btn-submit">Login</button>
-            </div>
-        </form>
-        <!-- Error Message Container -->
-        <div id="errorContainer" style="display: none; color: red; font-weight: bold;"></div>
-    </div>
-</main>
+        <button type="submit">Login</button>
+    </form>
+
+    <p>New here? <a href="/register">Register as a Volunteer</a></p>
+</section>
 
 <footer>
-    <p>&copy; 2024 NGO Portal. All Rights Reserved.</p>
+    <p>© 2024 The Giving Nest. All Rights Reserved.</p>
 </footer>
-
-<script src="login.js"></script>
+<script src="/js/login-script.js"></script>
 </body>
 </html>
