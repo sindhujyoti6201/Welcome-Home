@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WelcomeHome - Supervise Orders</title>
+    <link rel="stylesheet" type="text/css" href="/css/supervise.css">
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <h1>Supervise Orders</h1>
+        <div class="user-section">
+                <span class="user-info">
+                    <span class="user-title">Staff:</span>
+                    <span id="userName"></span>
+                </span>
+            <button class="back-btn" onclick="window.location.href='dashboard'">
+                <span class="back-icon">←</span>
+                Back to Dashboard
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Message Container -->
+    <div id="messageContainer"></div>
+
+    <!-- Action Buttons Section -->
+    <div class="card action-section">
+        <div class="action-buttons">
+            <button onclick="superviseManager.showNewOrderForm()" class="btn-primary">Start New Order</button>
+            <button onclick="superviseManager.showStatistics()" class="btn-secondary">View Statistics</button>
+        </div>
+    </div>
+
+    <!-- New Order Form Section -->
+    <div id="newOrderSection" class="card section hidden">
+        <h2>Start New Order</h2>
+        <form id="newOrderForm">
+            <div class="form-group">
+                <label for="clientUsername">Client Username *</label>
+                <input type="text" id="clientUsername" class="input-field" required>
+            </div>
+            <div class="form-group">
+                <label for="orderNotes">Order Notes</label>
+                <textarea id="orderNotes" class="input-field"></textarea>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Create Order</button>
+                <button type="button" onclick="superviseManager.hideNewOrderForm()" class="btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Statistics Section -->
+    <div id="statisticsSection" class="card section hidden">
+        <h2>Order Statistics</h2>
+        <div class="stats-grid">
+            <div class="stats-card">
+                <h3>Year Summary</h3>
+                <div id="yearStats" class="stats-content"></div>
+            </div>
+            <div class="stats-card">
+                <h3>Category Summary</h3>
+                <div id="categoryStats" class="stats-content"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+<script src="/js/supervise.js"></script>
+</body>
+</html>
