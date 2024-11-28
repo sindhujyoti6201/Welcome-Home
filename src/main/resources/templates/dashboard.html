@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WelcomeHome Staff Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #2f2f2f;
+        }
+
+        .navbar {
+            background-color: #e3d4c3;
+            padding: 1rem 2rem;
+            color: #2f2f2f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background-color: #c5b5a4;
+            color: #2f2f2f;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #b3a089;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h2 {
+            color: #2f2f2f;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-section p {
+            color: #4a4a4a;
+            font-size: 1.1rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .option-card {
+            background-color: #e3d4c3;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #2f2f2f;
+        }
+
+        .option-card h3 {
+            color: #2f2f2f;
+            margin-bottom: 1rem;
+        }
+
+        .option-card p {
+            color: #4a4a4a;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<nav class="navbar">
+    <h1>WelcomeHome</h1>
+    <div class="user-info">
+        <span id="userName">Staff Name</span>
+        <button class="logout-btn">Logout</button>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <section class="welcome-section">
+        <h2>Welcome to Staff Dashboard</h2>
+        <p>Select an option below to get started</p>
+    </section>
+
+    <div class="options-grid">
+        <div class="option-card" onclick="window.location.href='delivery'">
+            <i class="fas fa-truck"></i>
+            <h3>Manage Deliveries</h3>
+            <p>Track and manage order deliveries to clients' homes</p>
+        </div>
+
+        <div class="option-card" onclick="window.location.href='donations'">
+            <i class="fas fa-gift"></i>
+            <h3>Handle Donations</h3>
+            <p>Process and record new donations from donors</p>
+        </div>
+
+        <div class="option-card" onclick="window.location.href='supervise'">
+            <i class="fas fa-clipboard-check"></i>
+            <h3>Supervise Orders</h3>
+            <p>Oversee and manage order processing and assignment</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userName = localStorage.getItem('userName') || 'Staff Member';
+        document.getElementById('userName').textContent = userName;
+
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+    });
+</script>
+</body>
+</html>

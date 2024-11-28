@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WelcomeHome - Manage Deliveries</title>
+    <link rel="stylesheet" href="/css/delivery.css">
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <h1>Manage Deliveries</h1>
+        <div class="user-section">
+                <span class="user-info">
+                    <span class="user-title">Staff:</span>
+                    <span id="userName"></span>
+                </span>
+            <button class="back-btn" id="backBtn">
+                <span class="back-icon">←</span>
+                Back
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Search Section -->
+    <section class="card search-section">
+        <h2>Find Order</h2>
+        <form id="searchForm" class="search-container">
+            <div class="search-input-group">
+                <input type="text"
+                       id="searchInput"
+                       placeholder="Search by Order ID or Client Username"
+                       class="input-field"
+                       required>
+                <button type="submit" class="btn-primary">Search</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Order Details Section -->
+    <section class="order-details" id="orderDetailsSection">
+        <!-- Dynamic content will be inserted here -->
+    </section>
+
+    <!-- Order Items Section -->
+    <section class="card items-section">
+        <h2>Order Items and Locations</h2>
+        <div class="table-container">
+            <table id="itemsTable">
+                <thead>
+                <tr>
+                    <th>Item ID</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Dynamic content will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+<script src="/js/delivery.js"></script>
+</body>
+</html>

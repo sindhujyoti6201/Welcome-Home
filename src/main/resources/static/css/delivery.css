@@ -1,0 +1,270 @@
+/* Variables */
+:root {
+    --color-primary: #2f2f2f;
+    --color-background: #e3d4c3;
+    --color-secondary: #c5b5a4;
+    --color-white: #ffffff;
+    --shadow: 0 2px 4px rgba(47, 47, 47, 0.1);
+    --border-radius: 8px;
+    --spacing: 20px;
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-primary);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-info {
+    color: var(--color-background);
+    font-size: 1.1em;
+}
+
+.user-title {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+/* Button Styles */
+.back-btn {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #b3a090;
+}
+
+.back-icon {
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #404040;
+}
+
+/* Container and Card Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing);
+}
+
+.card {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing);
+    margin-bottom: var(--spacing);
+    box-shadow: var(--shadow);
+}
+
+/* Form Elements */
+.input-field {
+    border: 2px solid var(--color-secondary);
+    padding: 12px;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 1em;
+}
+
+.select-field {
+    border: 2px solid var(--color-secondary);
+    padding: 12px;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: var(--color-white);
+    font-size: 1em;
+}
+
+/* Search Section */
+.search-section {
+    margin-top: 20px;
+}
+
+.search-container {
+    margin-top: 15px;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid var(--color-secondary);
+}
+
+/* Status Badges */
+.status-badge {
+    background-color: var(--color-secondary);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+/* Order Items */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.order-item {
+    background-color: var(--color-background);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid var(--color-secondary);
+}
+
+.order-item:hover {
+    background-color: var(--color-secondary);
+}
+
+.order-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.order-item-details {
+    color: var(--color-primary);
+    font-size: 0.9em;
+}
+
+.order-item-details p {
+    margin: 2px 0;
+}
+
+/* Messages */
+.error-message, .success-message {
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .user-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-input-group {
+        flex-direction: column;
+    }
+
+    .btn-primary, .back-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    table {
+        font-size: 0.9em;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+}
