@@ -1,43 +1,43 @@
-    document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
 
-    async function loadOrders() {
+async function loadOrders() {
     const username = sessionStorage.getItem('username');
     try {
-    console.log('Fetching orders for:', username);
-    const response = await fetch(`/api/supervise/orders/${username}`);
+        console.log('Fetching orders for:', username);
+        const response = await fetch(`/api/supervise/orders/${username}`);
 
-    if (!response.ok) {
-    const errorData = await response.json();
-    console.error('Error details:', errorData);
-    throw new Error(`Failed to load orders: ${errorData.error || 'Unknown error'}`);
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error details:', errorData);
+            throw new Error(`Failed to load orders: ${errorData.error || 'Unknown error'}`);
+        }
+
+        const data = await response.json();
+        console.log('Received orders:', data);
+
+        if (!data.orders) {
+            console.error('No orders data received');
+            throw new Error('Invalid response format');
+        }
+
+        displayOrders(data.orders);
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('ordersList').innerHTML =
+            `<p>Error loading orders: ${error.message}</p>`;
+    }
 }
 
-    const data = await response.json();
-    console.log('Received orders:', data);
-
-    if (!data.orders) {
-    console.error('No orders data received');
-    throw new Error('Invalid response format');
-}
-
-    displayOrders(data.orders);
-} catch (error) {
-    console.error('Error loading orders:', error);
-    document.getElementById('ordersList').innerHTML =
-    `<p>Error loading orders: ${error.message}</p>`;
-}
-}
-
-    function displayOrders(orders) {
+function displayOrders(orders) {
     const ordersList = document.getElementById('ordersList');
     ordersList.innerHTML = orders.map(order => {
-    const formattedDate = new Date(order.orderDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-});
+        const formattedDate = new Date(order.orderDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
 
-    return `
+        return `
             <div class="order-card">
                 <div class="order-header">
                     <h3>Order #${order.orderID}</h3>
@@ -60,52 +60,53 @@
                 </div>
             </div>
         `;
-}).join('');
+    }).join('');
 }
-    async function updateOrderStatus(orderId) {
+
+async function updateOrderStatus(orderId) {
     const status = document.getElementById(`status-${orderId}`).value;
     const username = sessionStorage.getItem('username');
     const currentDate = new Date().toISOString().split('T')[0];
 
     const requestBody = {
-    userName: username,
-    orderID: orderId,
-    status: status,
-    date: currentDate
-};
+        userName: username,
+        orderID: orderId,
+        status: status,
+        date: currentDate
+    };
 
     console.log('Sending update request:', requestBody);
 
     try {
-    const response = await fetch('/api/supervise/update-status', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-},
-    body: JSON.stringify(requestBody)
-});
+        const response = await fetch('/api/supervise/update-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
 
-    console.log('Response status:', response.status);
+        console.log('Response status:', response.status);
 
-    if (!response.ok) {
-    const errorData = await response.json();
-    console.error('Error details:', errorData);
-    throw new Error(`Update failed: ${errorData.error || 'Unknown error'}`);
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error details:', errorData);
+            throw new Error(`Update failed: ${errorData.error || 'Unknown error'}`);
+        }
+
+        console.log('Update successful');
+        // Wait a moment before reloading orders to ensure backend has processed
+        setTimeout(() => loadOrders(), 500);
+
+    } catch (error) {
+        console.error('Error updating status:', error);
+        alert(`Failed to update order status: ${error.message}`);
+    }
 }
 
-    console.log('Update successful');
-    // Wait a moment before reloading orders to ensure backend has processed
-    setTimeout(() => loadOrders(), 500);
-
-} catch (error) {
-    console.error('Error updating status:', error);
-    alert(`Failed to update order status: ${error.message}`);
-}
-}
-
-    function backToDashboard() {
+function backToDashboard() {
     window.location.href = 'dashboard';
 }
 
-    loadOrders();
+loadOrders();
