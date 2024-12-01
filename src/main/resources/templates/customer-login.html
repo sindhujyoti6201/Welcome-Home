@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Register</title>
+    <link rel="stylesheet" href="/css/login-styles.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">The Giving Nest</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="login-register">
+    <h1>Customer Login</h1>
+    <form id="loginForm" class="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p>New here? <a href="/customer-register">Register as a Customer</a></p>
+</section>
+
+<footer>
+    <p>© 2024 The Giving Nest. All Rights Reserved.</p>
+</footer>
+<script src="/js/customer-login-script.js"></script>
+</body>
+</html>

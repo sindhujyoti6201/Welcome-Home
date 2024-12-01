@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SqlFileLoader {
     // Private constructor to prevent instantiation
@@ -19,12 +20,24 @@ public class SqlFileLoader {
 
             String sqlTemplate = reader.lines().collect(Collectors.joining("\n"));
 
+            // Iterate through the params map and replace placeholders with the actual values
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                sqlTemplate = sqlTemplate.replace("{" + entry.getKey()+ "}", "'" + entry.getValue() + "'");
+                String placeholder = "{" + entry.getKey() + "}";
+                String value = entry.getValue();
+                if (value.chars().allMatch(Character::isDigit)) {
+                    sqlTemplate = sqlTemplate.replace(placeholder, value);
+                } else {
+                    // Escape any single quotes in the value to prevent SQL injection
+                    value = value.replace("'", "''");
+
+                    // Replace the placeholder with the escaped value
+                    sqlTemplate = sqlTemplate.replace(placeholder, "'" + value + "'");
+                }
             }
+
             return sqlTemplate;
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load SQL from the file");
+            throw new RuntimeException("Failed to load SQL from the file", e);
         }
     }
 }
