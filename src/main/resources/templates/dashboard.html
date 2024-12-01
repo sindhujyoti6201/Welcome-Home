@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<nav>
+    <div class="app-name">WelcomeHome</div>
+    <div class="user-controls">
+        <span id="userName"></span>
+        <button class="nav-btn" onclick="item()">Items</button>
+        <button class="nav-btn" onclick="orders()">Orders</button>
+        <button class="nav-btn" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <div class="welcome-section">
+        <h2>Welcome to Staff Dashboard</h2>
+        <p>Select an option below to get started</p>
+    </div>
+
+    <div class="options-grid">
+        <div class="option-card" onclick="checkAccess('delivery')">
+            <h3>Manage Deliveries</h3>
+            <p>Track and manage order deliveries</p>
+        </div>
+
+        <div class="option-card" onclick="checkAccess('donations')">
+            <h3>Handle Donations</h3>
+            <p>Process and record donations</p>
+        </div>
+
+        <div class="option-card" onclick="checkAccess('supervise')">
+            <h3>Supervise Orders</h3>
+            <p>Oversee order processing</p>
+        </div>
+
+        <div class="option-card" onclick="checkAccess('manager')">
+            <h3>Manager Dashboard</h3>
+            <p>Access management tools</p>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="registrationPopup">
+    <h3>Access Denied</h3>
+    <p>You don't have permission to access this feature.</p>
+    <button onclick="closePopup()">Close</button>
+</div>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

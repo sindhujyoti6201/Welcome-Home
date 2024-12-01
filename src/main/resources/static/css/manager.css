@@ -1,0 +1,62 @@
+:root {
+    --color-primary: #2f2f2f;
+    --color-background: #e3d4c3;
+    --color-secondary: #c5b5a4;
+    --color-white: #ffffff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--color-background);
+}
+
+.nav {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.back-button {
+    background-color: var(--color-secondary);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.content {
+    width: 90%;
+    margin: 20px auto;
+}
+
+.title {
+    text-align: center;
+    color: var(--color-primary);
+    margin: 20px 0;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--color-white);
+}
+
+.orders-table th, .orders-table td {
+    padding: 12px;
+    border: 1px solid var(--color-secondary);
+    text-align: left;
+}
+
+.orders-table th {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.orders-table tr:hover {
+    background-color: var(--color-secondary);
+    cursor: pointer;
+}

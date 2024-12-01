@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DonationController {
     private static final Logger logger = LoggerFactory.getLogger(DonationController.class);
 
-
     @PostMapping("/donate")
     public void donate(@RequestBody LoginRequest request) {
         logger.info("Registering user " + request.username() + " with password " + request.password());
