@@ -1,0 +1,1 @@
+SELECT password from Person where username = {username}

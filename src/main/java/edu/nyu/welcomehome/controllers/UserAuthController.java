@@ -1,7 +1,9 @@
 package edu.nyu.welcomehome.controllers;
 
 import edu.nyu.welcomehome.models.request.LoginRequest;
+import edu.nyu.welcomehome.models.request.RegisterRequest;
 import edu.nyu.welcomehome.models.response.ImmutableLoginResponse;
+import edu.nyu.welcomehome.models.response.ImmutableRegisterResponse;
 import edu.nyu.welcomehome.services.UserAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +27,8 @@ public class UserAuthController {
         this.userAuthService = userAuthService;
     }
 
-    @PostMapping("/register")
-    public void register(String username, String password) {
-        logger.info("Registering user " + username + " with password " + password);
-    }
-
-    @PostMapping(
-            value = "/login",
-            consumes =  MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ImmutableLoginResponse> login(
-            @RequestBody LoginRequest request) {
-        System.out.println(request.username());
+    @PostMapping(value = "/volunteer/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImmutableLoginResponse> volunteerLogin(@RequestBody LoginRequest request) {
         if (userAuthService.isAuthorizedUser(request.username(), request.password())) {
             ImmutableLoginResponse response = ImmutableLoginResponse.builder()
                     .status("success")
@@ -50,6 +42,64 @@ public class UserAuthController {
                     .build();
             logger.info("Invalid username or password");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
+    @PostMapping(value = "/customer/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImmutableLoginResponse> customerLogin(@RequestBody LoginRequest request) {
+        if (userAuthService.isAuthorizedUser(request.username(), request.password())) {
+            ImmutableLoginResponse response = ImmutableLoginResponse.builder()
+                    .status("success")
+                    .message("User logged in successfully.")
+                    .build();
+            return ResponseEntity.ok(response);
+        } else {
+            ImmutableLoginResponse errorResponse = ImmutableLoginResponse.builder()
+                    .status("failure")
+                    .message("Invalid username or password")
+                    .build();
+            logger.info("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
+    @PostMapping(value = "/volunteer/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImmutableRegisterResponse> volunteerRegister(@RequestBody RegisterRequest request) {
+        try {
+            logger.info(request.roleEnrolled().get(0));
+            userAuthService.saveUser(request);
+                ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
+                    .status("success")
+                    .message("Volunteer registered successfully!")
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception error) {
+            ImmutableRegisterResponse errorResponse = ImmutableRegisterResponse.builder()
+                    .status("failure")
+                    .message("Unable to register the user. Try Again after some time!!")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping(value = "/customer/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImmutableRegisterResponse> customerRegister(@RequestBody RegisterRequest request) {
+        try {
+            userAuthService.saveUser(request);
+            ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
+                    .message("Volunteer registered successfully!")
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception error) {
+            ImmutableRegisterResponse errorResponse = ImmutableRegisterResponse.builder()
+                    .status("failure")
+                    .message("Unable to register the user. Try Again after some time!!")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 }

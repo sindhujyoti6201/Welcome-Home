@@ -11,8 +11,23 @@ public class MainController {
         return "home";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
+    @GetMapping("/volunteer-login")
+    public String volunteerLogin() {
+        return "volunteer-login";
+    }
+
+    @GetMapping("/customer-login")
+    public String customerLogin() {
+        return "customer-login";
+    }
+
+    @GetMapping("/volunteer-register")
+    public String volunteerRegister() {
+        return "volunteer-register";
+    }
+
+    @GetMapping("/customer-register")
+    public String customerRegister() {
+        return "customer-register";
     }
 }

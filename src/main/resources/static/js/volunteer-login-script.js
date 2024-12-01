@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // console.log(username);
         // console.log(password);
 
-        // Collect form data
         const formData = new FormData(loginForm);
 
         // Convert form data to a JSON object
@@ -18,23 +17,21 @@ document.addEventListener("DOMContentLoaded", function () {
             data[key] = value;
         });
 
-        console.log(data);
+        console.log("The data passed by the user is: ", data);
+
         try {
             // Send the login request as JSON
-            const response = await fetch('/login', {
+            const response = await fetch('/volunteer/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',  // Set Content-Type to application/json
                     'Accept': 'application/json'  // Expect JSON response
                 },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
+                body: JSON.stringify(data)
             });
 
             const responseData = await response.json();
-
+            console.log(responseData);
             if (response.ok) {
                 if (responseData.status === "success") {
                     // Successful login, redirect to home
@@ -51,12 +48,5 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error:', error);
             alert("An unexpected error occurred. Please try again.");
         }
-    });
-
-    // Handle register link
-    const registerLink = document.querySelector(".login-register a");
-    registerLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        window.location.href = "/register"; // Redirect to the register page
     });
 });
