@@ -1,0 +1,2 @@
+INSERT INTO Person (username, password, fname, lname, email) VALUES ({username}, {password}, {firstName}, {lastName}, {email})
+AS new ON DUPLICATE KEY UPDATE password = new.password, fname = new.fname, lname = new.lname, email = new.email

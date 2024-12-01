@@ -1,0 +1,157 @@
+/* General Reset */
+body, h1, p, label, input, button, select {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Background Styling */
+body {
+    background-image: url('/img/volunteer-login-images/volunteer-login.jpg'); /* Update path for background image */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Wrapper for content and footer alignment */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* Header */
+header {
+    background-color: #c5b5a4;
+    padding: 10px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2f2f2f;
+    font-weight: bold;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Register Section */
+.login-register {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 8px;
+    width: 100%; /* Full width */
+    max-width: 500px; /* Limit max width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-register h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: inline-block;
+    text-align: left;
+    background-color: #f9f9f9; /* Light background for form */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    min-width: 300px;  /* Prevent shrinking below 300px */
+    max-width: 400px;  /* Limit width to 400px */
+}
+
+.login-form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.login-form input,
+.login-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.login-form input:focus,
+.login-form select:focus {
+    border-color: #c5b5a4;
+    outline: none;
+}
+
+.login-form button {
+    padding: 10px 20px;
+    background-color: #c5b5a4; /* Matching the brand color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.login-form button:hover {
+    background-color: #a3917d;
+}
+
+.login-register p {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #555;
+}
+
+.login-register a {
+    color: #2f2f2f;
+    text-decoration: underline;
+}
+
+.login-register a:hover {
+    color: #c5b5a4; /* Brand color for links */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #c5b5a4;
+    color: #2f2f2f;
+    margin-top: auto; /* Keeps footer at the bottom of the page */
+}
