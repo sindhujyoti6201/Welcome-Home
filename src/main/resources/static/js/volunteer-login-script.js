@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 if (responseData.status === "success") {
                     // Successful login, redirect to home
-                    window.location.href = "/home";
+                    sessionStorage.setItem('username', data.username);
+                    window.location.href = "/dashboard";
                 } else {
                     // Handle failure response
                     alert(responseData.message || "Invalid credentials");

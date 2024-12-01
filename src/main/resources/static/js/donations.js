@@ -77,7 +77,7 @@ function previewImage(input) {
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             preview.innerHTML = `
                 <img src="${e.target.result}" alt="Item preview">
                 <button type="button" class="button remove-image" onclick="removeImage()">
