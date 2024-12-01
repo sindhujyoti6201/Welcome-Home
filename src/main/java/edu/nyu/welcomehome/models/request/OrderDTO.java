@@ -1,19 +1,14 @@
 package edu.nyu.welcomehome.models;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface Ordered {
-
-    Long orderID();
-
+public interface OrderDTO {
+    Integer orderID();
     String orderDate();
-
-    String orderNotes();
-
+    String status();
     String supervisor();
-
     String client();
+    Integer itemCount();
+    Boolean canUpdate();
 }

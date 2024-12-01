@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start or Update Order</title>
+    <style>
+        :root {
+            --color-primary: #2f2f2f;
+            --color-background: #e3d4c3;
+            --color-secondary: #c5b5a4;
+            --color-white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--color-background);
+        }
+
+        .nav {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            background-color: var(--color-secondary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .content {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--color-white);
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--color-primary);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--color-secondary);
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="nav">
+    <div>WelcomeHome</div>
+    <div>
+        <span id="userName"></span>
+        <button class="back-button" onclick="backToManager()">Back to Manager</button>
+    </div>
+</div>
+
+<div class="content">
+    <h2 id="pageTitle">Start New Order</h2>
+
+    <div class="form-group">
+        <label for="clientUsername">Client Username:</label>
+        <input type="text" id="clientUsername" required>
+    </div>
+
+    <div class="form-group">
+        <label for="orderNotes">Order Notes:</label>
+        <textarea id="orderNotes" rows="4"></textarea>
+    </div>
+
+    <div id="updateSection" style="display: none;">
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status">
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="delivered">Delivered</option>
+            </select>
+        </div>
+    </div>
+
+    <button onclick="submitOrder()" id="submitButton">Start Order</button>
+</div>
+
+<script>
+    document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+    const orderId = new URLSearchParams(window.location.search).get('orderId');
+
+    if (orderId) {
+        document.getElementById('pageTitle').textContent = 'Update Order Status';
+        document.getElementById('updateSection').style.display = 'block';
+        document.getElementById('submitButton').textContent = 'Update Status';
+        loadOrderDetails(orderId);
+    }
+
+    async function loadOrderDetails(orderId) {
+        try {
+            const response = await fetch(`/api/manager/order/${orderId}`);
+            if (!response.ok) throw new Error('Failed to load order');
+            const order = await response.json();
+
+            document.getElementById('clientUsername').value = order.client;
+            document.getElementById('clientUsername').disabled = true;
+            document.getElementById('orderNotes').value = order.orderNotes;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function submitOrder() {
+        const clientUsername = document.getElementById('clientUsername').value;
+        const orderNotes = document.getElementById('orderNotes').value;
+
+        if (orderId) {
+            const status = document.getElementById('status').value;
+            try {
+                const response = await fetch(`/api/manager/order/${orderId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status }),
+                });
+                if (!response.ok) throw new Error('Failed to update order');
+                window.location.href = 'manager.html';
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        } else {
+            try {
+                const response = await fetch('/api/manager/order/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        clientUsername,
+                        supervisorUsername: sessionStorage.getItem('username'),
+                        notes: orderNotes,
+                    }),
+                });
+                if (!response.ok) throw new Error('Failed to create order');
+                window.location.href = 'manager';
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    }
+
+    function backToManager() {
+        window.location.href = 'manager';
+    }
+</script>
+</body>
+</html>

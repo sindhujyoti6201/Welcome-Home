@@ -15,4 +15,34 @@ public class MainController {
     public String login() {
         return "login";
     }
+
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+
+    @GetMapping("/delivery")
+    public String delivery() {
+        return "delivery";
+    }
+
+    @GetMapping("/donations")
+    public String donations() {
+        return "donations";
+    }
+
+    @GetMapping("/supervise")
+    public String supervise() {
+        return "supervise";
+    }
+
+    @GetMapping("/manager")
+    public String manager() {
+        return "manager";
+    }
+
+    @GetMapping("/start-order")
+    public String startOrder() {
+        return "start-order";
+    }
 }
