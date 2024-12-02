@@ -1,7 +1,10 @@
 package edu.nyu.welcomehome.services;
 
+import edu.nyu.welcomehome.models.response.DonatedItemCategoryResponse;
+import edu.nyu.welcomehome.models.response.ImmutableDonatedItemCategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +22,21 @@ public class AnalyticsService {
         );
     }
 
-    public List<Map<String, Object>> getItemCategoryDonations() {
-        return jdbcTemplate.queryForList(
-                "SELECT i.mainCategory, i.subCategory, COUNT(*) as itemCount " +
-                        "FROM Item i JOIN Category c ON i.mainCategory = c.mainCategory AND i.subCategory = c.subCategory " +
-                        "GROUP BY i.mainCategory, i.subCategory"
-        );
+    public List<DonatedItemCategoryResponse> getItemCategoryDonations() {
+        String sql = "SELECT i.mainCategory, i.subCategory, COUNT(*) as itemCount " +
+                "FROM Item i JOIN Category c ON i.mainCategory = c.mainCategory AND i.subCategory = c.subCategory " +
+                "GROUP BY i.mainCategory, i.subCategory";
+
+        // Define the RowMapper for mapping the result set to DonatedItemCategoryResponse
+        RowMapper<DonatedItemCategoryResponse> rowMapper = (rs, rowNum) ->
+                ImmutableDonatedItemCategoryResponse.builder()
+                        .mainCategory(rs.getString("mainCategory"))
+                        .subCategory(rs.getString("subCategory"))
+                        .itemCount(rs.getInt("itemCount"))
+                        .build();
+
+        // Query the database and map results using the RowMapper
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public int getTotalItemsDonated() {
@@ -43,15 +55,23 @@ public class AnalyticsService {
         );
     }
 
-    public List<Map<String, Object>> getTopDonatedCategories(int topN) {
-        return jdbcTemplate.queryForList(
-                "SELECT i.mainCategory, COUNT(*) as itemCount " +
-                        "FROM Item i " +
-                        "GROUP BY i.mainCategory " +
-                        "ORDER BY itemCount DESC " +
-                        "LIMIT ?",
-                topN
-        );
+    public List<DonatedItemCategoryResponse> getTopDonatedCategories(int topN) {
+        // SQL Query to get the top N donated categories based on item count
+        String sql = "SELECT i.mainCategory, COUNT(*) as itemCount " +
+                "FROM Item i " +
+                "GROUP BY i.mainCategory " +
+                "ORDER BY itemCount DESC " +
+                "LIMIT ?";
+
+        // RowMapper to map the result set to DonatedItemCategoryResponse
+        RowMapper<DonatedItemCategoryResponse> rowMapper = (rs, rowNum) ->
+                ImmutableDonatedItemCategoryResponse.builder()
+                        .mainCategory(rs.getString("mainCategory"))
+                        .itemCount(rs.getInt("itemCount"))
+                        .build();
+
+        // Query the database using the RowMapper and passing the topN parameter for LIMIT
+        return jdbcTemplate.query(sql, rowMapper, topN);
     }
 
     public Map<String, Object> getVolunteerContributions() {
