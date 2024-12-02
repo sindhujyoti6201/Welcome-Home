@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Giving Nest - Analytics Dashboard</title>
+    <link rel="stylesheet" href="/css/analytics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">Welcome Home</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/volunteer-login">Volunteer</a></li>
+            <li><a href="/customer-login">Borrow</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="analytics-hero">
+    <h1>Community Impact Dashboard</h1>
+    <div class="analytics-summary">
+        <div class="stat-card">
+            <h3>Clients Served</h3>
+            <p th:text="${clientsServed}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Items Donated</h3>
+            <p th:text="${itemsDonated}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Order Completion</h3>
+            <p th:text="${#numbers.formatPercent(orderCompletionRate/100, 0, 2)} + '%'">0%</p>
+        </div>
+    </div>
+</section>
+
+<section class="analytics-details">
+    <div class="chart-container">
+        <h2>Item Donations by Category</h2>
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <div class="volunteer-impact">
+        <h2>Volunteer Contributions</h2>
+        <div th:with="volunteers=${volunteerContributions}">
+            <p>Total Volunteers: <span th:text="${volunteers.totalVolunteers}">0</span></p>
+            <p>Items Contributed: <span th:text="${volunteers.itemsContributed}">0</span></p>
+        </div>
+    </div>
+
+    <div class="processing-time">
+        <h2>Order Processing</h2>
+        <p>Average Processing Time:
+            <span th:text="${#numbers.formatDecimal(processingTime.avgProcessingDays, 1, 1)} + ' days'">0 days</span>
+        </p>
+    </div>
+</section>
+
+<footer>
+    <p>© <span id="year"></span> The Giving Nest. All Rights Reserved.</p>
+</footer>
+
+<script th:src="@{/js/analytics-chart.js}"></script>
+<script th:src="@{/js/home-script.js}"></script>
+</body>
+</html>
