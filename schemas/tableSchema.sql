@@ -33,7 +33,7 @@ CREATE TABLE Category (
 CREATE TABLE Item (
                       ItemID INT NOT NULL,
                       iDescription TEXT,
-                      photo VARCHAR(20), -- Use BLOB for advanced implementations
+                      photo LONGBLOB, -- Use BLOB for advanced implementations
                       color VARCHAR(20),
                       isNew BOOLEAN DEFAULT TRUE,
                       hasPieces BOOLEAN,

@@ -1,10 +1,16 @@
 package edu.nyu.welcomehome.controllers;
 
+import edu.nyu.welcomehome.services.AnalyticsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
+
+    @Autowired
+    private AnalyticsService analyticsService;
 
     @GetMapping("/")
     public String home() {
@@ -59,5 +65,17 @@ public class MainController {
     @GetMapping("/start-order")
     public String startOrder() {
         return "start-order";
+    }
+
+    @GetMapping("/analytics")
+    public String getAnalyticsDashboard(Model model) {
+        model.addAttribute("clientsServed", analyticsService.getTotalClientsServed());
+        model.addAttribute("itemsDonated", analyticsService.getTotalItemsDonated());
+        model.addAttribute("orderCompletionRate", analyticsService.getOrderCompletionRate());
+        model.addAttribute("categoryDonations", analyticsService.getItemCategoryDonations());
+        model.addAttribute("topCategories", analyticsService.getTopDonatedCategories(5));
+        model.addAttribute("volunteerContributions", analyticsService.getVolunteerContributions());
+        model.addAttribute("processingTime", analyticsService.getAverageProcessingTime());
+        return "analytics";
     }
 }

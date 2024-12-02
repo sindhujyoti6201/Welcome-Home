@@ -1,0 +1,99 @@
+/* General Reset */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Hero Section */
+.analytics-hero {
+    text-align: center;
+    padding: 20px;
+    background-color: #e9f5e9;
+}
+
+.analytics-summary {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+/* Analytics Details */
+.analytics-details {
+    padding: 20px;
+    background-color: #f2f2f2;
+}
+
+.chart-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.volunteer-impact, .processing-time {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+}
