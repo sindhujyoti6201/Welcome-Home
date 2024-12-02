@@ -62,5 +62,5 @@ function item() {
 }
 
 function orders() {
-    window.location.href = 'orders';
+    window.location.href = '/search-order';
 }

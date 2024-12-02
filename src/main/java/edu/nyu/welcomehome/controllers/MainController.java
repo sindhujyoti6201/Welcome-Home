@@ -60,4 +60,9 @@ public class MainController {
     public String startOrder() {
         return "start-order";
     }
+
+    @GetMapping("search-order")
+    public String searchOrder() {
+        return "search-order";
+    }
 }
