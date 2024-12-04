@@ -85,35 +85,49 @@ nav {
     color: white;
 }
 
-/* How It Works Section */
-.how-it-works {
-    padding: 50px 20px;
+/* Join Community Section */
+.join-community {
     text-align: center;
+    padding: 50px 20px;
     background-color: #ffffff;
 }
 
-.how-it-works h2 {
+.join-community h2 {
     font-size: 2rem;
     margin-bottom: 30px;
 }
 
-.steps {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-}
-
-.step {
+.community-card {
     background-color: #f9f4f0;
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
-    width: 300px;
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
 }
 
-.step h3 {
-    font-size: 1.5rem;
+.community-card h3 {
+    font-size: 1.8rem;
     margin-bottom: 15px;
+}
+
+.community-card button {
+    padding: 10px 20px;
+    background-color: #c5b5a4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.community-card button:hover {
+    background-color: #b3a291;
+}
+
+.community-card a {
+    text-decoration: none;
+    color: white;
 }
 
 /* Social Media Section */
@@ -132,13 +146,12 @@ nav {
     display: flex;
     justify-content: center;
     gap: 20px;
-    overflow: hidden;
-    position: relative;
+    flex-wrap: wrap;
 }
 
 .social-carousel img {
-    width: 200px;
-    height: auto;
+    width: auto;
+    height: 180px;
     border-radius: 10px;
 }
 
