@@ -1,0 +1,208 @@
+/* General Reset */
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #2f2f2f;
+    background-color: #f2e6dc;
+}
+
+/* Header */
+header {
+    background-color: #c5b5a4;
+    padding: 10px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2f2f2f;
+    font-weight: bold;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    text-align: center;
+    padding: 80px 20px;
+    background: url('/img/home-images/01.jpg') no-repeat center center/cover;
+    color: #ffffff;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Bootstrap Buttons with Custom Styling */
+.hero-buttons .btn {
+    padding: 10px 20px;
+    background-color: #b3a291;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease; /* Added transition for smooth hover effect */
+}
+
+.hero-buttons .btn:hover {
+    background-color: #a3917d; /* Hover color */
+}
+
+.hero-buttons a {
+    text-decoration: none;
+    color: white;
+}
+
+/* Join Community Section */
+.join-community {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #ffffff;
+}
+
+.join-community h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.community-card {
+    background-color: #e8a570;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.community-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+/* Bootstrap Button with Custom Styling */
+.community-card .btn {
+    padding: 10px 20px;
+    background-color: #c5b5a4;
+    color: #e4995a;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease; /* Added transition for smooth hover effect */
+}
+
+.community-card .btn:hover {
+    background-color: #b3a291; /* Hover color */
+}
+
+.community-card a {
+    text-decoration: none;
+    color: #bfa08f;
+}
+
+/* Social Media Section */
+.social-media {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #decbbc;
+}
+
+.social-media h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Carousel for Social Media */
+.social-carousel {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.social-carousel img {
+    width: auto;
+    height: 180px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.social-carousel img:hover {
+    transform: scale(1.1);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #c5b5a4;
+    color: #2f2f2f;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+footer #year {
+    font-weight: bold;
+}
+
+/* Media Query for Responsiveness */
+@media (max-width: 768px) {
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .community-card {
+        width: 100%;
+    }
+
+    .social-carousel {
+        flex-direction: column;
+    }
+}
