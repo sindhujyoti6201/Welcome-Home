@@ -22,6 +22,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Auto Update Footer Year
-const footerYear = document.querySelector("footer p");
-const currentYear = new Date().getFullYear();
-footerYear.innerHTML = `© ${currentYear} The Giving Nest. All Rights Reserved.`;
+const footerYear = document.querySelector("#year");
+footerYear.textContent = new Date().getFullYear();
