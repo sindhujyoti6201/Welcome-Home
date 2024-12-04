@@ -34,10 +34,14 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             successMessage.style.marginTop = "20px";
             document.querySelector(".login-register").appendChild(successMessage);
 
+            sessionStorage.setItem('username', loginData.username);
+
             // Redirect to home page after 3 seconds
             setTimeout(() => {
-                window.location.href = "/home"; // Replace with actual home page URL
-            }, 3000);
+                //window.location.href = `/customer?username=${loginData.username}`;
+                window.location.href = '/';
+                // Replace with actual home page URL
+            }, 10000);
         } else {
             // Handle login failure
             alert(loginResponseData.message || "Invalid credentials. Please try again.");

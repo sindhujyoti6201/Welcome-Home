@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5dc; /* Beige background */
+    color: #000000; /* Black text */
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #000000; /* Black navbar background */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: #f5f5dc; /* Beige text */
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.navbar a:hover {
+    background-color: #333333; /* Dark gray hover effect */
+}
+
+.navbar h1 {
+    color: #f5f5dc;
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Container Styling */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.container h1 {
+    margin: 0 0 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* Ranking Section */
+.ranking-section {
+    margin-top: 30px;
+    background-color: #ffffff; /* White background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff; /* White table background */
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #000000; /* Black header background */
+    color: #f5f5dc; /* Beige text */
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f5f5dc; /* Beige hover effect */
+}

@@ -78,4 +78,9 @@ public class MainController {
         model.addAttribute("processingTime", analyticsService.getAverageProcessingTime());
         return "analytics";
     }
+
+    @GetMapping("/range")
+    public String range() {
+        return "range";
+    }
 }

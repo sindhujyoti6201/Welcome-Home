@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details</title>
+    <style>
+        /* Keeping your existing styles as they are */
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Customer Details</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customerDetails}">
+            <td th:text="${customer['customerID']}"></td>
+            <td th:text="${customer['firstName']}"></td>
+            <td th:text="${customer['lastName']}"></td>
+            <td th:text="${customer['email']}"></td>
+            <td th:text="${customer['phoneNumber']}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
