@@ -1,1 +1,1 @@
-SELECT password from Person where username = {username}
+SELECT password from Person JOIN Act using(username) where username = {username} AND roleID = 'BORROWER'

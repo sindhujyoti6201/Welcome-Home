@@ -1,4 +1,3 @@
--- Drop the database if it already exists
 DROP DATABASE IF EXISTS welcomehomedb;
 
 -- Create the database
@@ -21,8 +20,6 @@ DROP TABLE IF EXISTS Person;
 DROP TABLE IF EXISTS Item;
 DROP TABLE IF EXISTS Category;
 
--- Create the tables
-
 CREATE TABLE Category (
                           mainCategory VARCHAR(50) NOT NULL,
                           subCategory VARCHAR(50) NOT NULL,
@@ -31,9 +28,9 @@ CREATE TABLE Category (
 ) ENGINE=InnoDB;
 
 CREATE TABLE Item (
-                      ItemID INT NOT NULL,
+                      ItemID INT NOT NULL AUTO_INCREMENT,
                       iDescription TEXT,
-                      photo LONGBLOB, -- Use BLOB for advanced implementations
+                      photo LONGBLOB,  -- stored in LONGBLOB
                       color VARCHAR(20),
                       isNew BOOLEAN DEFAULT TRUE,
                       hasPieces BOOLEAN,
@@ -41,8 +38,7 @@ CREATE TABLE Item (
                       mainCategory VARCHAR(50) NOT NULL,
                       subCategory VARCHAR(50) NOT NULL,
                       PRIMARY KEY (ItemID),
-                      FOREIGN KEY (mainCategory, subCategory) REFERENCES Category (mainCategory, subCategory)
-                          ON DELETE RESTRICT ON UPDATE CASCADE
+                      FOREIGN KEY (mainCategory, subCategory) REFERENCES Category(mainCategory, subCategory)
 ) ENGINE=InnoDB;
 
 CREATE TABLE Person (
@@ -58,8 +54,7 @@ CREATE TABLE PersonPhone (
                              userName VARCHAR(50) NOT NULL,
                              phone VARCHAR(20) NOT NULL,
                              PRIMARY KEY (userName, phone),
-                             FOREIGN KEY (userName) REFERENCES Person (userName)
-                                 ON DELETE CASCADE ON UPDATE CASCADE
+                             FOREIGN KEY (userName) REFERENCES Person(userName) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE DonatedBy (
@@ -67,26 +62,22 @@ CREATE TABLE DonatedBy (
                            userName VARCHAR(50) NOT NULL,
                            donateDate DATE NOT NULL,
                            PRIMARY KEY (ItemID, userName),
-                           FOREIGN KEY (ItemID) REFERENCES Item (ItemID)
-                               ON DELETE RESTRICT ON UPDATE CASCADE,
-                           FOREIGN KEY (userName) REFERENCES Person (userName)
-                               ON DELETE CASCADE ON UPDATE CASCADE
+                           FOREIGN KEY (ItemID) REFERENCES Item(ItemID) ON DELETE CASCADE,
+                           FOREIGN KEY (userName) REFERENCES Person(userName) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE Role (
-                      roleID VARCHAR(20) NOT NULL,
+                      roleID ENUM('DELIVERY AGENT', 'DONOR', 'STAFF', 'BORROWER', 'MANAGER', 'SUPERVISOR') NOT NULL,
                       rDescription VARCHAR(100),
                       PRIMARY KEY (roleID)
 ) ENGINE=InnoDB;
 
 CREATE TABLE Act (
                      userName VARCHAR(50) NOT NULL,
-                     roleID VARCHAR(20) NOT NULL,
+                     roleID ENUM('DELIVERY AGENT', 'DONOR', 'STAFF', 'BORROWER', 'MANAGER', 'SUPERVISOR') NOT NULL,  -- Matching the ENUM type of the Role table
                      PRIMARY KEY (userName, roleID),
-                     FOREIGN KEY (userName) REFERENCES Person (userName)
-                         ON DELETE CASCADE ON UPDATE CASCADE,
-                     FOREIGN KEY (roleID) REFERENCES Role (roleID)
-                         ON DELETE CASCADE ON UPDATE CASCADE
+                     FOREIGN KEY (userName) REFERENCES Person(userName) ON DELETE CASCADE,
+                     FOREIGN KEY (roleID) REFERENCES Role(roleID) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE Location (
@@ -108,23 +99,20 @@ CREATE TABLE Piece (
                        shelfNum INT NOT NULL,
                        pNotes TEXT,
                        PRIMARY KEY (ItemID, pieceNum),
-                       FOREIGN KEY (ItemID) REFERENCES Item (ItemID)
-                           ON DELETE CASCADE ON UPDATE CASCADE,
-                       FOREIGN KEY (roomNum, shelfNum) REFERENCES Location (roomNum, shelfNum)
-                           ON DELETE CASCADE ON UPDATE CASCADE
+                       FOREIGN KEY (ItemID) REFERENCES Item(ItemID) ON DELETE CASCADE,
+                       FOREIGN KEY (roomNum, shelfNum) REFERENCES Location(roomNum, shelfNum) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE Ordered (
-                         orderID INT NOT NULL,
+                         orderID INT NOT NULL AUTO_INCREMENT,
                          orderDate DATE NOT NULL,
                          orderNotes VARCHAR(200),
-                         supervisor VARCHAR(50) NOT NULL,
+                         supervisor VARCHAR(50) NULL,
                          client VARCHAR(50) NOT NULL,
+                         orderStatus ENUM('INITIATED', 'IN PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'INITIATED',
                          PRIMARY KEY (orderID),
-                         FOREIGN KEY (supervisor) REFERENCES Person (userName)
-                             ON DELETE RESTRICT ON UPDATE CASCADE,
-                         FOREIGN KEY (client) REFERENCES Person (userName)
-                             ON DELETE CASCADE ON UPDATE CASCADE
+                         FOREIGN KEY (supervisor) REFERENCES Person(userName) ON DELETE SET NULL,
+                         FOREIGN KEY (client) REFERENCES Person(userName) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE ItemIn (
@@ -132,20 +120,16 @@ CREATE TABLE ItemIn (
                         orderID INT NOT NULL,
                         found BOOLEAN DEFAULT FALSE,
                         PRIMARY KEY (ItemID, orderID),
-                        FOREIGN KEY (ItemID) REFERENCES Item (ItemID)
-                            ON DELETE CASCADE ON UPDATE CASCADE,
-                        FOREIGN KEY (orderID) REFERENCES Ordered (orderID)
-                            ON DELETE CASCADE ON UPDATE CASCADE
+                        FOREIGN KEY (ItemID) REFERENCES Item(ItemID) ON DELETE CASCADE,
+                        FOREIGN KEY (orderID) REFERENCES Ordered(orderID) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE Delivered (
                            userName VARCHAR(50) NOT NULL,
                            orderID INT NOT NULL,
-                           status VARCHAR(20) NOT NULL,
+                           deliveredStatus ENUM('NOT YET DELIVERED', 'IN TRANSIT', 'DELIVERED') NOT NULL DEFAULT 'NOT YET DELIVERED',
                            date DATE NOT NULL,
                            PRIMARY KEY (userName, orderID),
-                           FOREIGN KEY (userName) REFERENCES Person (userName)
-                               ON DELETE CASCADE ON UPDATE CASCADE,
-                           FOREIGN KEY (orderID) REFERENCES Ordered (orderID)
-                               ON DELETE CASCADE ON UPDATE CASCADE
+                           FOREIGN KEY (userName) REFERENCES Person(userName) ON DELETE CASCADE,
+                           FOREIGN KEY (orderID) REFERENCES Ordered(orderID) ON DELETE CASCADE
 ) ENGINE=InnoDB;
