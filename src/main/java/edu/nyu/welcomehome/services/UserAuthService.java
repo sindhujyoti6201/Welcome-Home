@@ -1,5 +1,6 @@
 package edu.nyu.welcomehome.services;
 
+import edu.nyu.welcomehome.models.RoleType;
 import edu.nyu.welcomehome.models.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,11 +23,21 @@ public class UserAuthService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public boolean isAuthorizedUser(String username, String password) {
+    public boolean isAuthorizedAsStaff(String username, String password) {
+        String sqlFilePath = "sql/volunteer-login.sql";
+        return isAuthorizedUser(username, password, sqlFilePath);
+    }
+
+    public boolean isAuthorizedAsCustomer(String username, String password) {
+        String sqlFilePath = "sql/customer-login.sql";
+        return isAuthorizedUser(username, password, sqlFilePath);
+    }
+
+    public boolean isAuthorizedUser(String username, String password, String sqlFilePath) {
         try {
             // Fetch the stored password hash
             Map<String, String> params = Collections.singletonMap("username", username);
-            String query = loadSqlFromFile("sql/volunteer-login.sql", params);
+            String query = loadSqlFromFile(sqlFilePath, params);
             logger.info("The query parsed is: " + query);
             String storedPasswordHash = jdbcTemplate.queryForObject(query, String.class);
             if (storedPasswordHash == null) {
@@ -48,31 +59,48 @@ public class UserAuthService {
         byte[] hashedPasswordBytes = md.digest(password.getBytes());
         return Base64.getEncoder().encodeToString(hashedPasswordBytes);
     }
+    
+    public void saveUserAsCustomer(RegisterRequest request) throws NoSuchAlgorithmException {
+        List<String> roleTypes = new ArrayList<>();
+        roleTypes.add("BORROWER");
 
-    public void saveUser(RegisterRequest request) throws NoSuchAlgorithmException {
+        // store details in the Person's table
+        saveUser(request, roleTypes);
+    }
+    public void saveUserAsVolunteer(RegisterRequest request) throws NoSuchAlgorithmException {
+        List<String> roleTypes = new ArrayList<>();
+        request.roleEnrolled().forEach(roleType -> roleTypes.add(roleType.getRole()));
+        roleTypes.add("STAFF");
+
+        // store details in the Person's table
+        saveUser(request, roleTypes);
+    }
+
+    private void saveUser(RegisterRequest request, List<String> roleTypes) throws NoSuchAlgorithmException {
         Map<String, String> params = new HashMap<>();
         params.put("username", request.username());
         params.put("password", hashPasswordWithUsernameSalt(request.password(), request.username()));
         params.put("firstName", request.firstName());
         params.put("lastName", request.lastName());
         params.put("email", request.email());
-        List<String> roleTypes = request.roleEnrolled();
-//        roleTypes.add("staff");
-//
-//        // store details in the Person's table
+
         String query = loadSqlFromFile("sql/register.sql", params);
         logger.info("The query parsed is: " + query);
         jdbcTemplate.update(query);
 
         roleTypes.forEach(role -> {
-            params.put("rDescription", role.toString());
+            params.put("roleID", role);
             String queryToGetRoleID = loadSqlFromFile("sql/selectRoleID.sql", params);
             logger.info("The query parsed is: " + queryToGetRoleID);
-            Integer roleID = jdbcTemplate.queryForObject(queryToGetRoleID, Integer.class);
-            params.put("roleID", String.valueOf(roleID));
-            String queryToSaveUserEnrolledRoles = loadSqlFromFile("sql/role.sql", params);
-            logger.info("The query parsed is: " + queryToSaveUserEnrolledRoles);
-            jdbcTemplate.update(queryToSaveUserEnrolledRoles);
+            String roleID = jdbcTemplate.queryForObject(queryToGetRoleID, String.class);
+            if (roleID != null) {
+                String queryToSaveUserEnrolledRoles = loadSqlFromFile("sql/role.sql", params);
+                logger.info("The query parsed is: " + queryToSaveUserEnrolledRoles);
+                jdbcTemplate.update(queryToSaveUserEnrolledRoles);
+                System.out.println(roleID+" Completed");
+            } else {
+                throw new RuntimeException(String.format("roleID: %s not found", role));
+            }
         });
     }
 }

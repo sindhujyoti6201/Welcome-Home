@@ -1,0 +1,1 @@
+SELECT Ordered.orderID, Ordered.orderDate, Ordered.orderNotes, Ordered.supervisor, Ordered.client, Ordered.orderStatus, Delivered.username, ItemIn.itemID, Item.iDescription, Item.hasPieces FROM Ordered JOIN ItemIn using (orderID) JOIN Delivered using (orderID) JOIN Item using (ItemID) WHERE Ordered.client = {username}
