@@ -79,6 +79,11 @@ public class MainController {
         return "analytics";
     }
 
+    @GetMapping("/range")
+    public String range() {
+        return "range";
+    }
+  
     @GetMapping("/search-order")
     public String getSearchOrder() {
         return "search-order";

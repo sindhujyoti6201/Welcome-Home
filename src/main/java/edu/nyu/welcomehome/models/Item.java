@@ -1,5 +1,6 @@
 package edu.nyu.welcomehome.models;
 
+import com.mysql.cj.jdbc.Blob;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -8,7 +9,7 @@ public interface Item {
 
     String description();
 
-    String photo();
+    Blob photo();
 
     String color();
 

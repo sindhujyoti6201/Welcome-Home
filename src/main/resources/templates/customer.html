@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Home - Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .nav-left {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .search-filter-container input,
+        .search-filter-container select {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+        }
+
+        .search-filter-container button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-filter-container button:hover {
+            background-color: #45a049;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .product-item {
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-item img {
+            max-width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .product-item h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-item p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .product-item ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .product-item li {
+            margin-bottom: 5px;
+        }
+
+        .add-to-order {
+            margin-top: auto;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        .add-to-order:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 1024px) {
+            .product-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-filter-container input,
+            .search-filter-container select {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+
+            .search-filter-container input,
+            .search-filter-container select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-left">WelcomeHome</div>
+    <div class="nav-right">
+        <span id="userName">${username}</span>
+        <button class="nav-btn" onclick="item()">Profile</button>
+        <button class="nav-btn" onclick="orders()">OrderHistory</button>
+    </div>
+</nav>
+
+<form th:action="@{/customer}" method="get" class="search-filter-container">
+    <input type="text" name="itemId" placeholder="Search by Item ID"
+           th:value="${param.itemId}">
+
+    <select name="mainCategory" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        <option th:each="category : ${mainCategories}"
+                th:value="${category}"
+                th:text="${category}"
+                th:selected="${param.mainCategory == category}"></option>
+    </select>
+
+    <select name="subCategory">
+        <option value="">All Subcategories</option>
+        <option th:if="${subcategories}"
+                th:each="subcategory : ${subcategories}"
+                th:value="${subcategory}"
+                th:text="${subcategory}"
+                th:selected="${param.subCategory == subcategory}"></option>
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
+<div class="product-container">
+    <div th:each="item : ${items}" class="product-item">
+        <img th:if="${item.photo != null}"
+             th:src="'data:image/jpeg;base64,' + ${#strings.replace(item.photo, '\n', '')}"
+             alt="Product Image"/>
+
+        <h3>Item ID: <span th:text="${item.itemID}"></span></h3>
+        <p th:text="${item.iDescription}">Description</p>
+        <ul>
+            <li>Color: <span th:text="${item.color}"></span></li>
+            <li>New: <span th:text="${item.isNew ? 'Yes' : 'No'}"></span></li>
+            <li>Has Pieces: <span th:text="${item.hasPieces ? 'Yes' : 'No'}"></span></li>
+            <li>Material: <span th:text="${item.material}"></span></li>
+            <li>Category: <span th:text="${item.mainCategory}"></span></li>
+            <li>Subcategory: <span th:text="${item.subCategory}"></span></li>
+        </ul>
+        <button class="add-to-order">Add to Order</button>
+    </div>
+</div>
+<script>
+    //document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username') || sessionStorage.getItem('username') || 'Guest';
+
+    // Display the username on the page
+    document.getElementById('userName').textContent = username;
+    function item() {
+        window.location.href = '/profile';
+    }
+
+    function orders() {
+        window.location.href = '/orderhistory';
+    }
+    async function fetchCustomerData() {
+        const username = sessionStorage.getItem('username');
+
+        if (!username) {
+            alert("User not logged in!");
+            window.location.href = '/login';
+            return;
+        }
+        try {
+            const response = await fetch(`/api/customer/${username}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Customer Data:', data);
+                // Handle data as needed
+            } else {
+                console.error('Failed to fetch customer data:', data);
+                alert("Error fetching customer data.");
+            }
+        }
+        catch (error) {
+            console.error('Error during fetch:', error);
+            alert("Unable to fetch customer data.");
+        }
+    }
+
+    fetchCustomerData();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+:root {
+    --color-primary: #2f2f2f;
+    --color-background: #e3d4c3;
+    --color-secondary: #c5b5a4;
+    --color-white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--color-background);
+}
+
+nav {
+    background: var(--color-primary);
+    padding: 1rem;
+    color: var(--color-white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-white);
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.back-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.search-container {
+    margin: 2rem auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.search-button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.search-button:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.results-container {
+    margin-top: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid var(--color-secondary);
+}
+
+th {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 1rem;
+}

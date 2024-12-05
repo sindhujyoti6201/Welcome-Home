@@ -58,7 +58,7 @@ function logout() {
 }
 
 function item() {
-    window.location.href = 'item';
+    window.location.href = '/itemsearch';
 }
 
 function orders() {
