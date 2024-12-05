@@ -29,7 +29,7 @@ public class UserAuthController {
 
     @PostMapping(value = "/volunteer/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImmutableLoginResponse> volunteerLogin(@RequestBody LoginRequest request) {
-        if (userAuthService.isAuthorizedUser(request.username(), request.password())) {
+        if (userAuthService.isAuthorizedAsStaff(request.username(), request.password())) {
             ImmutableLoginResponse response = ImmutableLoginResponse.builder()
                     .status("success")
                     .message("User logged in successfully.")
@@ -47,7 +47,7 @@ public class UserAuthController {
 
     @PostMapping(value = "/customer/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImmutableLoginResponse> customerLogin(@RequestBody LoginRequest request) {
-        if (userAuthService.isAuthorizedUser(request.username(), request.password())) {
+        if (userAuthService.isAuthorizedAsCustomer(request.username(), request.password())) {
             ImmutableLoginResponse response = ImmutableLoginResponse.builder()
                     .status("success")
                     .message("User logged in successfully.")
@@ -66,8 +66,8 @@ public class UserAuthController {
     @PostMapping(value = "/volunteer/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImmutableRegisterResponse> volunteerRegister(@RequestBody RegisterRequest request) {
         try {
-            logger.info(request.roleEnrolled().get(0));
-            userAuthService.saveUser(request);
+            logger.info(request.roleEnrolled().get(0).toString());
+            userAuthService.saveUserAsVolunteer(request);
                 ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
                     .status("success")
                     .message("Volunteer registered successfully!")
@@ -87,7 +87,7 @@ public class UserAuthController {
     @PostMapping(value = "/customer/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImmutableRegisterResponse> customerRegister(@RequestBody RegisterRequest request) {
         try {
-            userAuthService.saveUser(request);
+            userAuthService.saveUserAsVolunteer(request);
             ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
                     .message("Volunteer registered successfully!")
                     .build();

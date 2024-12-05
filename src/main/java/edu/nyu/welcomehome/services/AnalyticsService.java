@@ -49,7 +49,7 @@ public class AnalyticsService {
     public double getOrderCompletionRate() {
         return jdbcTemplate.queryForObject(
                 "SELECT " +
-                        "(CAST(SUM(CASE WHEN status = 'COMPLETED' THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100 " +
+                        "(CAST(SUM(CASE WHEN deliveredStatus = 'DELIVERED' THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100 " +
                         "FROM Delivered",
                 Double.class
         );
