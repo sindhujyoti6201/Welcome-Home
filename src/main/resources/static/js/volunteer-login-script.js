@@ -35,8 +35,25 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 if (responseData.status === "success") {
                     // Successful login, redirect to home
-                    sessionStorage.setItem('username', data.username);
-                    window.location.href = "/dashboard";
+                    const loginContainer = document.querySelector(".login-register");
+                    if (loginContainer) {
+                        const successMessage = document.createElement("div");
+                        successMessage.textContent = "Login successful! Redirecting to Volunteer dashboard page...";
+                        successMessage.style.color = "green";
+                        successMessage.style.textAlign = "center";
+                        successMessage.style.marginTop = "20px";
+
+                        // Append the success message
+                        loginContainer.appendChild(successMessage);
+
+                        // Redirect after a short delay
+                        sessionStorage.setItem('username', data.username);
+                        setTimeout(() => {
+                            window.location.href = "/dashboard";
+                        }, 2000); // 2-second delay before redirection
+                    } else {
+                        console.error("Element '.login-register' not found. Cannot display success message.");
+                    }
                 } else {
                     // Handle failure response
                     alert(responseData.message || "Invalid credentials");
