@@ -1,272 +1,121 @@
-// Track used locations
-let usedLocations = new Set();
+document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
 
-const API_ENDPOINTS = {
-    STAFF_INFO: '/api/staff/current',
-    CATEGORIES: '/api/categories',
-    SUBCATEGORIES: '/api/subcategories',
-    CHECK_LOCATION: '/api/check-location',
-    SUBMIT_DONATION: '/api/donations'
-};
-
-// Load staff name
-async function loadStaffName() {
+async function loadOrders() {
+    const username = sessionStorage.getItem('username');
+    console.log('Loading orders for:', username);  // Debug log
     try {
-        const response = await fetch(API_ENDPOINTS.STAFF_INFO);
-        const data = await response.json();
-        document.getElementById('staffName').textContent = data.name || 'Staff';
-    } catch (error) {
-        console.error('Failed to load staff name:', error);
-        document.getElementById('staffName').textContent = 'Staff';
-    }
-}
-
-// Load categories from database
-async function loadCategories() {
-    try {
-        const response = await fetch(API_ENDPOINTS.CATEGORIES);
-        const categories = await response.json();
-
-        const select = document.querySelector('select[name="mainCategory"]');
-        select.innerHTML = '<option value="">Select Category</option>';
-
-        const uniqueCategories = [...new Set(categories.map(cat => cat.mainCategory))];
-        uniqueCategories.forEach(category => {
-            const option = new Option(category, category);
-            select.add(option);
-        });
-    } catch (error) {
-        console.error('Failed to load categories:', error);
-    }
-}
-
-// Load subcategories
-async function loadSubcategories() {
-    const mainCategory = document.querySelector('select[name="mainCategory"]').value;
-
-    try {
-        const response = await fetch(`${API_ENDPOINTS.SUBCATEGORIES}/${mainCategory}`);
-        const subcategories = await response.json();
-
-        const select = document.querySelector('select[name="subCategory"]');
-        select.innerHTML = '<option value="">Select Sub Category</option>';
-
-        subcategories.forEach(subcat => {
-            const option = new Option(subcat.subCategory, subcat.subCategory);
-            select.add(option);
-        });
-    } catch (error) {
-        console.error('Failed to load subcategories:', error);
-    }
-}
-
-// Image preview functionality
-function previewImage(input) {
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
-
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-
-        // Validate file size (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Image must be less than 5MB');
-            input.value = '';
-            preview.innerHTML = '<span class="placeholder-text">No image selected</span>';
-            return;
+        const response = await fetch(`/api/supervise/orders/${username}`);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to load orders');
         }
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.innerHTML = `
-                <img src="${e.target.result}" alt="Item preview">
-                <button type="button" class="button remove-image" onclick="removeImage()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.innerHTML = '<span class="placeholder-text">No image selected</span>';
+        const data = await response.json();
+        console.log('Received orders:', data);  // Debug log
+
+        if (!data.orders) {
+            throw new Error('No orders data received');
+        }
+
+        displayOrders(data.orders);
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('ordersList').innerHTML =
+            `<div class="detail-item">Error loading orders: ${error.message}</div>`;
     }
 }
 
-function removeImage() {
-    document.getElementById('itemImage').value = '';
-    document.getElementById('imagePreview').innerHTML =
-        '<span class="placeholder-text">No image selected</span>';
-}
+function displayOrders(orders) {
+    const ordersList = document.getElementById('ordersList');
 
-function createPieceFormHTML(index) {
-    return `
-        <div class="piece-container" id="piece-${index}">
-            <h4>Piece #${index + 1}</h4>
-            
-            <div class="form-group">
-                <label>Description</label>
-                <input type="text" name="piece_description_${index}" required>
-            </div>
+    if (orders.length === 0) {
+        ordersList.innerHTML = '<div class="detail-item">No orders requiring supervision at this time.</div>';
+        return;
+    }
 
-            <div class="form-group">
-                <label>Dimensions (inches)</label>
-                <div class="grid-3">
-                    <input type="number" name="piece_length_${index}" placeholder="Length" required min="1">
-                    <input type="number" name="piece_width_${index}" placeholder="Width" required min="1">
-                    <input type="number" name="piece_height_${index}" placeholder="Height" required min="1">
+    ordersList.innerHTML = orders.map(order => {
+        const formattedDate = new Date(order.orderDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+
+        console.log('Order status:', order.orderStatus);  // Debug log
+        console.log('Current delivery status:', order.currentStatus);  // Debug log
+
+        return ` 
+            <div class="order-card">
+                <div class="order-header">
+                    <h3>Order #${order.orderID}</h3>
+                    <div class="status-group">
+                        <button class="update-btn" onclick="updateOrderStatus(${order.orderID}, '${order.client}')">
+                            Mark as In Transit
+                        </button>
+                    </div>
+                </div>
+                <div class="order-details">
+                    <div class="detail-item">
+                        <strong>Order Date:</strong> ${formattedDate}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Client:</strong> ${order.client}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Order Status:</strong> ${order.orderStatus}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Delivery Status:</strong> ${order.currentStatus || 'NOT YET DELIVERED'}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Notes:</strong> ${order.orderNotes || 'No notes'}
+                    </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>Location *</label>
-                <div class="grid-2">
-                    <input type="number" 
-                           name="piece_room_${index}" 
-                           placeholder="Room Number" 
-                           required 
-                           min="1"
-                           onchange="checkLocationAvailability(${index})">
-                    <input type="number" 
-                           name="piece_shelf_${index}" 
-                           placeholder="Shelf Number" 
-                           required 
-                           min="1"
-                           onchange="checkLocationAvailability(${index})">
-                </div>
-                <div class="location-status" id="locationStatus_${index}"></div>
-            </div>
-
-            <div class="form-group">
-                <label>Notes</label>
-                <textarea name="piece_notes_${index}"></textarea>
-            </div>
-
-            ${index > 0 ? `
-                <button type="button" class="button" onclick="removePiece(${index})">
-                    Remove Piece
-                </button>
-            ` : ''}
-        </div>
-    `;
+        `;
+    }).join('');
 }
 
-async function checkLocationAvailability(index) {
-    const roomInput = document.querySelector(`[name="piece_room_${index}"]`);
-    const shelfInput = document.querySelector(`[name="piece_shelf_${index}"]`);
-    const statusDiv = document.getElementById(`locationStatus_${index}`);
+async function updateOrderStatus(orderId, client) {
+    const username = sessionStorage.getItem('username');
+    const currentDate = new Date().toISOString().split('T')[0];
 
-    const room = roomInput.value;
-    const shelf = shelfInput.value;
+    const requestBody = {
+        userName: client,  // Using client instead of supervisor username
+        orderID: orderId,
+        deliveredStatus: 'IN_TRANSIT',
+        date: currentDate
+    };
 
-    if (!room || !shelf) return;
-
-    const locationKey = `${room}-${shelf}`;
+    console.log('Sending update request:', requestBody);  // Debug log
 
     try {
-        if (usedLocations.has(locationKey)) {
-            statusDiv.textContent = "Location already assigned to another piece";
-            statusDiv.className = "location-status unavailable";
-            return false;
-        }
-
-        const response = await fetch(`${API_ENDPOINTS.CHECK_LOCATION}?room=${room}&shelf=${shelf}`);
-        const data = await response.json();
-
-        if (data.available) {
-            statusDiv.textContent = "Location available";
-            statusDiv.className = "location-status available";
-            usedLocations.add(locationKey);
-            return true;
-        } else {
-            statusDiv.textContent = "Location unavailable";
-            statusDiv.className = "location-status unavailable";
-            return false;
-        }
-    } catch (error) {
-        statusDiv.textContent = "Error checking location";
-        statusDiv.className = "location-status unavailable";
-        return false;
-    }
-}
-
-function togglePiecesSection() {
-    const hasPieces = document.getElementById('hasPieces').checked;
-    const piecesSection = document.getElementById('piecesSection');
-
-    piecesSection.style.display = hasPieces ? 'block' : 'none';
-
-    if (hasPieces && !document.querySelector('.piece-container')) {
-        addPieceForm();
-    }
-}
-
-function addPieceForm() {
-    const container = document.getElementById('piecesContainer');
-    const index = container.children.length;
-
-    const pieceForm = document.createElement('div');
-    pieceForm.innerHTML = createPieceFormHTML(index);
-    container.appendChild(pieceForm);
-}
-
-function removePiece(index) {
-    const piece = document.getElementById(`piece-${index}`);
-
-    const room = piece.querySelector(`[name="piece_room_${index}"]`).value;
-    const shelf = piece.querySelector(`[name="piece_shelf_${index}"]`).value;
-    usedLocations.delete(`${room}-${shelf}`);
-
-    piece.remove();
-
-    const pieces = document.querySelectorAll('.piece-container');
-    pieces.forEach((piece, idx) => {
-        piece.querySelector('h4').textContent = `Piece #${idx + 1}`;
-    });
-}
-
-async function handleSubmit(event) {
-    event.preventDefault();
-
-    if (document.getElementById('hasPieces').checked) {
-        const pieces = document.querySelectorAll('.piece-container');
-        for (let piece of pieces) {
-            const statusDiv = piece.querySelector('.location-status');
-            if (!statusDiv.classList.contains('available')) {
-                alert('Please ensure all piece locations are valid');
-                return;
-            }
-        }
-    }
-
-    const formData = new FormData(event.target);
-
-    // Add file to FormData if exists
-    const imageFile = document.getElementById('itemImage').files[0];
-    if (imageFile) {
-        formData.append('itemImage', imageFile);
-    }
-
-    try {
-        const response = await fetch(API_ENDPOINTS.SUBMIT_DONATION, {
+        const response = await fetch('/api/supervise/update-status', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
         });
 
-        if (response.ok) {
-            alert('Donation recorded successfully');
-            window.location.href = 'dashboard.html';
-        } else {
-            alert('Failed to record donation');
+        const responseData = await response.json();
+        console.log('Response:', responseData);  // Debug log
+
+        if (!response.ok) {
+            throw new Error(responseData.error || 'Failed to update status');
         }
+
+        await loadOrders();
+        alert('Order status updated successfully!');
+
     } catch (error) {
-        alert('Error recording donation');
-        console.error(error);
+        console.error('Error updating status:', error);
+        alert(`Failed to update status: ${error.message}`);
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await Promise.all([
-        loadStaffName(),
-        loadCategories()
-    ]);
-    togglePiecesSection();
-});
+function backToDashboard() {
+    window.location.href = '/dashboard';
+}
+
+// Load orders when page loads
+loadOrders();

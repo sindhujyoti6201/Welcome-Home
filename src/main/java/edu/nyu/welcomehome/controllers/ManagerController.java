@@ -1,18 +1,21 @@
 package edu.nyu.welcomehome.controllers;
 
-import edu.nyu.welcomehome.models.ImmutableOrdered;
 import edu.nyu.welcomehome.services.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/manager")
 @CrossOrigin(origins = "*")
 public class ManagerController {
+    private final Logger logger = Logger.getLogger(ManagerController.class.getName());
     private final ManagerService managerService;
 
     @Autowired
@@ -20,44 +23,50 @@ public class ManagerController {
         this.managerService = managerService;
     }
 
-    @GetMapping("/started-orders")
-    public ResponseEntity<?> getStartedOrders() {
+    @GetMapping("/orders/{username}")
+    public ResponseEntity<?> getOrders(@PathVariable String username) {
         try {
-            List<ImmutableOrdered> orders = managerService.getStartedOrders();
-            return ResponseEntity.ok(Map.of("orders", orders));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
-        }
-    }
+            logger.info("Fetching orders for manager: " + username);
+            Map<String, Object> response = managerService.getInitiatedOrders();
 
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<?> getOrder(@PathVariable Long orderId) {
-        try {
-            ImmutableOrdered order = managerService.getOrderById(orderId);
-            return ResponseEntity.ok(order);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    @PostMapping("/order/create")
-    public ResponseEntity<?> createOrder(@RequestBody Map<String, String> request) {
-        try {
-            String clientUsername = request.get("clientUsername");
-            String supervisorUsername = request.get("supervisorUsername");
-            String notes = request.get("notes");
-
-            if (!managerService.isStaffMember(supervisorUsername)) {
-                return ResponseEntity.status(403).body(Map.of("error", "Not authorized"));
+            if (((List<?>) response.get("orders")).isEmpty()) {
+                logger.info("No orders found for manager");
+                return ResponseEntity.ok()
+                        .body(Map.of(
+                                "orders", List.of(),
+                                "message", "No orders available at this time"
+                        ));
             }
 
-            Long orderId = managerService.createOrder(clientUsername, supervisorUsername, notes);
-            return ResponseEntity.ok(Map.of("orderId", orderId));
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+            logger.severe("Error fetching orders: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to fetch orders: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/update-order")
+    public ResponseEntity<?> updateOrderStatus(@RequestBody Map<String, Object> request) {
+        try {
+            Long orderId = Long.valueOf(request.get("orderID").toString());
+            String action = (String) request.get("action");
+
+            logger.info("Updating order " + orderId + " with action: " + action);
+            Map<String, Object> result = managerService.updateOrderStatus(orderId, action);
+
+            if (result.containsKey("error")) {
+                logger.warning("Failed to update order: " + result.get("error"));
+                return ResponseEntity.badRequest()
+                        .body(result);
+            }
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            logger.severe("Error updating order status: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update order status: " + e.getMessage()));
         }
     }
 }

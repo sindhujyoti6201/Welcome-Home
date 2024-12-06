@@ -1,0 +1,1 @@
+SELECT roleID FROM Act WHERE username = {username}
