@@ -4,45 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Giving Nest</title>
-  <link rel="stylesheet" href="/css/home-styles.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
 <header>
-  <nav>
-    <div class="logo">Welcome Home</div>
-    <ul class="nav-links">
-      <li><a href="/analytics">Impact Made</a></li>
-      <li><a href="/volunteer-login">Want to Volunteer</a></li>
-      <li><a href="/customer-login">Borrow</a></li>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c5b5a4;">
+    <div class="logo navbar-brand" style="font-size: 1.8rem; font-weight: bold;">WelcomeHome</div>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/analytics"><b>Our Impact</b></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/volunteer-login"><b>Donate Items</b></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/customer-login"><b>Borrow Items</b></a>
+      </li>
     </ul>
   </nav>
 </header>
 
-<section class="hero">
-  <div class="hero-bg">
-    <h1>The Giving Nest</h1>
-    <p>A community-driven initiative to help those in need.</p>
-    <p> Join us in making a difference by volunteering, donating, or spreading the word.</p>
-    <button id="donate-button"><a href="/volunteer-login">Donate Now</a></button>
+<section class="hero text-center" style="background: url('/img/home-images/01.jpg') no-repeat center center/cover; padding: 80px 20px; color: #ffffff;">
+  <div>
+    <h1 class="display-4">The Giving Nest: Help Us Help Others</h1>
+    <p class="lead">Connecting generosity with need. Donate items you no longer need or borrow what you require.</p>
+    <div class="hero-buttons">
+      <a href="/volunteer-login" class="btn btn-lg" style="background-color: whitesmoke; color: black;">Donate Now</a>
+      <a href="/customer-login" class="btn btn-lg" style="background-color: whitesmoke; color: black;">Borrow Now</a>
+    </div>
   </div>
 </section>
 
-<section class="community">
-  <h2>Become a Part of the Community</h2>
-  <p>Join hands with us to create a positive impact in the lives of those who need it most.</p>
-  <button id="community-button"><a href="/customer-login">Join Now</a></button>
-</section>
-
-<section class="social-media">
-  <h2>Follow Us on Social Media</h2>
-  <div class="social-carousel">
-    <img src="/img/home-images/drawers.jpg" alt="Social Media 1">
-    <img src="/img/home-images/relaxing-chair.jpg" alt="Social Media 2">
-    <img src="/img/volunteer-login-images/volunteer-login.jpg" alt="Social Media 3">
+<section class="join-community text-center py-5" style="background-color: #f3e3d9;">
+  <h2 class="mb-5"><b>Join Now to make an impact</b></h2>
+  <div class="community-card mx-auto p-4" style="background-color: #f9f4f0; border-radius: 10px; width: 400px;">
+    <h3 class="mb-3">Be a Part of Our Mission</h3>
+    <p>Join our growing network of donors and borrowers. Together, we make a difference!</p>
+    <a href="/volunteer-login" class="btn btn-lg" style="background-color: #c5b5a4; color: white;">Join the Community</a>
   </div>
 </section>
 
-<footer>
+<section class="social-media text-center py-5" style="background-color: #decbbc;">
+  <h2 class="mb-4">Follow Our Journey</h2>
+  <div class="social-carousel d-flex justify-content-center gap-4 flex-wrap">
+    <img src="/img/home-images/02.jpg" alt="Donated item 1" class="rounded" style="height: 180px; transition: transform 0.3s ease;">
+    <img src="/img/home-images/03.jpg" alt="Donated item 2" class="rounded" style="height: 180px; transition: transform 0.3s ease;">
+    <img src="/img/home-images/04.jpg" alt="Donated item 3" class="rounded" style="height: 180px; transition: transform 0.3s ease;">
+    <img src="/img/home-images/05.jpg" alt="Donated item 4" class="rounded" style="height: 180px; transition: transform 0.3s ease;">
+    <img src="/img/home-images/06.jpg" alt="Donated item 5" class="rounded" style="height: 180px; transition: transform 0.3s ease;">
+  </div>
+</section>
+
+<footer class="text-center py-4" style="background-color: #c5b5a4; color: #2f2f2f;">
   <p>© <span id="year"></span> The Giving Nest. All Rights Reserved.</p>
   <p>
     <strong>Contact Us:</strong> info@givingnest.com | +1 123-456-7890 <br>
@@ -50,6 +64,9 @@
   </p>
 </footer>
 
-<script src="/js/home-script.js"></script>
+<script src="/js/home.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

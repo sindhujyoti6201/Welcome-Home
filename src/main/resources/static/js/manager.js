@@ -151,11 +151,11 @@
 
     await loadOrders();
 
-    if (action === 'start') {
-    alert(`Order started successfully!\nAssigned Supervisor: ${data.supervisor}\nDelivery Agent: ${data.deliveryAgent}`);
-} else {
-    alert('Order cancelled successfully!');
-}
+        if (action === 'start') {
+            alert(`Order started successfully!\nAssigned Supervisor: ${data.supervisor}\nDelivery Agent: ${data.deliveryAgent}`);
+        } else {
+            alert('Order cancelled successfully!');
+        }
 
 } catch (error) {
     console.error('Error:', error);

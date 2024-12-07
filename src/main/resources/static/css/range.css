@@ -1,0 +1,100 @@
+/* General Styles for Navbar and Background */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5dc; /* Beige background */
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #000000; /* Black navbar background */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: #f5f5dc; /* Beige text */
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.navbar a:hover {
+    background-color: #333333; /* Dark gray hover effect */
+}
+
+.navbar h1 {
+    color: #f5f5dc;
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Styling for Date Range and Button Section */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.container h1{
+    margin: 0;
+    font-size: 24px;
+    display:flex;
+    justify-content: center;
+}
+
+.form-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+input[type="date"] {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn {
+    background-color: #000000; /* Black button */
+    border: none;
+    padding: 10px 20px;
+    color: #f5f5dc; /* Beige text */
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.btn:hover {
+    background-color: #333333; /* Dark gray hover effect */
+}
+
+/* Ranking Table Section */
+.ranking-section {
+    margin-top: 30px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f9fafc;
+}

@@ -21,5 +21,5 @@ public interface RegisterRequest {
 
     String email();
 
-    List<String> roleEnrolled();
+    List<RoleType> roleEnrolled();
 }

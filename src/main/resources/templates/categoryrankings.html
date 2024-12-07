@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Rankings</title>
+    <link rel="stylesheet" href="/css/categoryrankings.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h1>WelcomeHome</h1>
+    <div>
+        <a href="/range">Back</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>Category Rankings</h1>
+    </div>
+    <div class="ranking-section">
+        <h2>Most Popular Categories/Subcategories</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Main Category</th>
+                <th>Subcategory</th>
+                <th>Order Count</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ranking : ${rankings}">
+                <td th:text="${ranking['mainCategory']}"></td>
+                <td th:text="${ranking['subCategory']}"></td>
+                <td th:text="${ranking['orderCount']}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

@@ -28,16 +28,14 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
         if (loginResponse.ok && loginResponseData.status === "success") {
             const successMessage = document.createElement("div");
-            successMessage.textContent = "Login successful! Redirecting to home page...";
+            successMessage.textContent = "Login successful! Redirecting to Customer dashboard page...";
             successMessage.style.color = "green";
             successMessage.style.textAlign = "center";
             successMessage.style.marginTop = "20px";
             document.querySelector(".login-register").appendChild(successMessage);
 
-            // Redirect to home page after 3 seconds
-            setTimeout(() => {
-                window.location.href = "/home"; // Replace with actual home page URL
-            }, 3000);
+            sessionStorage.setItem('username', loginData.username);
+            window.location.href = '/customer';
         } else {
             // Handle login failure
             alert(loginResponseData.message || "Invalid credentials. Please try again.");

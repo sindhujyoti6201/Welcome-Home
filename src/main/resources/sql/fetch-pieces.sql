@@ -1,0 +1,1 @@
+SELECT Piece.pieceNum, Piece.pDescription FROM Piece JOIN Item using(ItemID) WHERE ItemID = {ItemID}

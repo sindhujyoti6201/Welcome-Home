@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rank System</title>
+    <link rel="stylesheet" href="/css/range.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h1>Welcome Home</h1>
+    <div>
+        <a href="/">Home</a>
+        <a href="/analytics">Analytics</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Rank System</h1>
+
+    <!-- Form for Date Range and Buttons -->
+    <div class="form-section">
+        <h2>Select Date Range</h2>
+        <form id="rankForm" method="GET" action="/categoryrankings">
+            <label for="startDate">Start Date: </label>
+            <input type="date" id="startDate" name="startDate" required>
+            <label for="endDate">End Date: </label>
+            <input type="date" id="endDate" name="endDate" required>
+            <button type="submit" class="btn">Rank by SubCategory</button>
+            <!-- New Button for Categories Only -->
+            <button type="submit" class="btn" formaction="/categoryrank">Rank by Categories</button>
+        </form>
+    </div>
+
+    <!-- Display the rankings -->
+    <div class="ranking-section" id="rankingSection" style="display: none;">
+        <h2>Most Popular Categories/Subcategories</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Main Category</th>
+                <th>Subcategory</th>
+                <th>Order Count</th>
+            </tr>
+            </thead>
+            <tbody id="rankingTable">
+            <!-- This will be dynamically filled with rankings -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
+

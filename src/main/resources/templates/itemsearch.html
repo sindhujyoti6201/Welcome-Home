@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WelcomeHome</title>
+    <link rel="stylesheet" href="/css/itemsearch.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <div class="app-name">WelcomeHome</div>
+    <div class="user-controls">
+        <button class="back-btn" onclick="back()">Back</button>
+    </div>
+</nav>
+
+<div class="search-container">
+    <form method="get" action="/itemsearch">
+        <input type="number" class="search-input" name="itemID" placeholder="Enter Item ID" required>
+        <button type="submit" class="search-button">Search</button>
+    </form>
+</div>
+
+<div class="results-container">
+    <h2>Search Results:</h2>
+
+    <!-- Display error message if available -->
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Display table if pieces are found -->
+<!--    <div th:if="${pieces != null}">-->
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>Piece Number</th>
+                <th>Description</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Height</th>
+                <th>Room Number</th>
+                <th>Shelf Number</th>
+                <th>Shelf Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="piece : ${pieces}">
+                <td th:text="${piece.pieceNum}"></td>
+                <td th:text="${piece.pieceDescription}"></td>
+                <td th:text="${piece.length}"></td>
+                <td th:text="${piece.width}"></td>
+                <td th:text="${piece.height}"></td>
+                <td th:text="${piece.roomNum}"></td>
+                <td th:text="${piece.shelfNum}"></td>
+                <td th:text="${piece.pNotes}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/js/itemsearch.js"></script>
+</body>
+</html>

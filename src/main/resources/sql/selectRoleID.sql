@@ -1,1 +1,1 @@
-SELECT roleID from Role where rDescription = {rDescription}
+SELECT roleID from Role where roleID = {roleID}

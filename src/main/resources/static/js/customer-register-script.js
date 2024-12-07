@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok && responseData.status === "success") {
                     // Show a success message
                     const successMessage = document.createElement("div");
-                    successMessage.textContent = "Registration successful! Redirecting to login page...";
+                    successMessage.textContent = "Registration successful! Redirecting to Customer login page...";
                     successMessage.style.color = "green";
                     successMessage.style.textAlign = "center";
                     successMessage.style.marginTop = "20px";
