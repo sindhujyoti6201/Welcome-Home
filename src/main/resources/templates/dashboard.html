@@ -8,15 +8,17 @@
     <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
-<nav>
-    <div class="app-name">WelcomeHome</div>
-    <div class="user-controls">
-        <span id="userName"></span>
-        <button class="nav-btn" onclick="item()">Items</button>
-        <button class="nav-btn" onclick="orders()">Orders</button>
-        <button class="nav-btn" onclick="logout()">Logout</button>
-    </div>
-</nav>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c5b5a4;">
+        <div class="logo navbar-brand" style="font-size: 1.8rem; font-weight: bold;">WelcomeHome</div>
+        <div class="user-controls">
+            <span id="userName"></span>
+            <button class="nav-btn" onclick="item()">Items</button>
+            <button class="nav-btn" onclick="orders()">Orders</button>
+            <button class="nav-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+</header>
 
 <div class="dashboard-container">
     <div class="welcome-section">
@@ -53,6 +55,13 @@
     <p>You don't have permission to access this feature.</p>
     <button onclick="closePopup()">Close</button>
 </div>
+<footer class="text-center py-4" style="background-color: #c5b5a4; color: #2f2f2f;">
+    <p>© <span id="year"></span> The Giving Nest. All Rights Reserved.</p>
+    <p>
+        <strong>Contact Us:</strong> info@givingnest.com | +1 123-456-7890 <br>
+        <strong>Address:</strong> 123 Giving Nest St, Kindness City, USA
+    </p>
+</footer>
 
 <script src="/js/dashboard.js"></script>
 </body>

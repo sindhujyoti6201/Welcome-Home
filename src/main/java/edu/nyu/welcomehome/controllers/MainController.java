@@ -50,7 +50,6 @@ public class MainController {
 
     @GetMapping("/dashboard")
     public String dashboard(@RequestParam(required = false) String username) {
-        System.out.println(username);
         return "dashboard";
     }
 

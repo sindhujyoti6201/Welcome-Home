@@ -6,19 +6,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-<div class="navbar">
-    <h2>Record Donation</h2>
-    <div class="nav-right">
-        <span class="staff-name">Welcome, <span id="staffName">Loading...</span></span>
-        <a href="dashboard" class="button">Back</a>
+<header>
+    <div class="navbar">
+        <h2>WelcomeHome</h2>
+        <div class="nav-right">
+            <span class="staff-name">Welcome, <span id="staffName">Loading...</span></span>
+            <a href="dashboard" class="button">Back</a>
+        </div>
     </div>
-</div>
+</header>
 
+<h2 style="text-align: center; color: white;">Record Donation</h2>
 <div class="container">
     <form id="donationForm" onsubmit="handleSubmit(event)">
         <!-- Item Details Section -->
         <div class="form-section">
-            <h3 class="section-title">Item Details</h3>
+            <h3 class="section-title" style="color: black;">Item Details</h3>
 
             <div class="form-group">
                 <label>Description *</label>
@@ -55,7 +58,7 @@
                 <label>Item Image</label>
                 <div class="image-upload-container">
                     <div id="imagePreview" class="image-preview">
-                        <span class="placeholder-text">No image selected</span>
+                        <span class="placeholder-text" color="black">No image selected</span>
                     </div>
                     <input type="file"
                            id="itemImage"
@@ -91,6 +94,14 @@
         <button type="submit" class="button">Record Donation</button>
     </form>
 </div>
+
+<footer class="text-center py-4" style="background-color: #c5b5a4; color: #2f2f2f;">
+    <p>© <span id="year"></span> The Giving Nest. All Rights Reserved.</p>
+    <p>
+        <strong>Contact Us:</strong> info@givingnest.com | +1 123-456-7890 <br>
+        <strong>Address:</strong> 123 Giving Nest St, Kindness City, USA
+    </p>
+</footer>
 
 <script src="/js/donations.js"></script>
 </body>
