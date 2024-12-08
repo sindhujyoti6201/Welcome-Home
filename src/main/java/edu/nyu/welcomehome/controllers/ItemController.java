@@ -2,21 +2,15 @@ package edu.nyu.welcomehome.controllers;
 
 import edu.nyu.welcomehome.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/customer")
 public class ItemController {
 
     private final ItemService itemService;
@@ -26,20 +20,18 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @GetMapping("/customer")
+    @GetMapping
     public String showCustomerPage(Model model,
                                    @RequestParam(required = false) String itemId,
                                    @RequestParam(required = false) String mainCategory,
                                    @RequestParam(required = false) String subCategory,
                                    @RequestParam(required = false) String username) {
         // Fetch main categories
-        Set<String> mainCategories = itemService.getMainCategories();
-        model.addAttribute("mainCategories", mainCategories);
+        model.addAttribute("mainCategories", itemService.getMainCategories());
 
         // Fetch subcategories if main category is selected
         if (mainCategory != null && !mainCategory.isEmpty()) {
-            Set<String> subcategories = itemService.getSubcategoriesByMainCategory(mainCategory);
-            model.addAttribute("subcategories", subcategories);
+            model.addAttribute("subcategories", itemService.getSubcategoriesByMainCategory(mainCategory));
         }
 
         // Search and filter items
@@ -47,9 +39,18 @@ public class ItemController {
         model.addAttribute("items", items);
 
         // Pass the username to the model for display
-        model.addAttribute("username", username); // Added username to model
+        model.addAttribute("username", username);
 
         return "customer"; // Return the customer view
     }
+
+
+    @PostMapping("/addToCart")
+    @ResponseBody
+    public String addToCart(@RequestParam String username, @RequestParam String itemId) {
+        boolean added = itemService.addItemToCart(username, itemId);
+        return added ? "Item added to cart successfully!" : "Failed to add item to cart.";
+    }
+
 }
 

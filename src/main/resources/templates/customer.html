@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome Home - Customer</title>
     <style>
+        :root {
+            --color-primary: #2f2f2f;
+            --color-background: #e3d4c3;
+            --color-secondary: #c5b5a4;
+            --color-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5dc;
+            background-color: var(--color-background);
+            color: var(--color-primary);
             margin: 0;
             padding: 20px;
         }
@@ -16,15 +30,40 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 15px 25px;
             margin-bottom: 20px;
+            border-radius: 8px;
         }
 
         .nav-left {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-white);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--color-primary);
+            color: var(--color-secondary);
         }
 
         .search-filter-container {
@@ -38,23 +77,28 @@
         .search-filter-container select {
             padding: 12px;
             font-size: 16px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--color-secondary);
             border-radius: 4px;
             width: 250px;
+            background-color: var(--color-white);
+            color: var(--color-primary);
         }
 
         .search-filter-container button {
             padding: 12px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .search-filter-container button:hover {
-            background-color: #45a049;
+            background-color: var(--color-primary);
+            color: var(--color-secondary);
         }
 
         .product-container {
@@ -65,20 +109,22 @@
         }
 
         .product-item {
-            border: 1px solid #ccc;
+            border: 1px solid var(--color-secondary);
             padding: 20px;
-            background-color: white;
+            background-color: var(--color-white);
             text-align: center;
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            color: var(--color-primary);
         }
 
         .product-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
         }
 
         .product-item img {
@@ -97,7 +143,6 @@
 
         .product-item p {
             font-size: 16px;
-            color: #555;
             margin-bottom: 15px;
         }
 
@@ -106,26 +151,28 @@
             padding: 0;
             margin: 0;
             font-size: 14px;
-            color: #777;
         }
 
         .product-item li {
             margin-bottom: 5px;
         }
 
-        .add-to-order {
+        .add-to-cart {
             margin-top: auto;
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
             border: none;
             padding: 12px;
             cursor: pointer;
             font-size: 16px;
             border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .add-to-order:hover {
-            background-color: #45a049;
+        .add-to-cart:hover {
+            background-color: var(--color-primary);
+            color: var(--color-secondary);
         }
 
         @media (max-width: 1024px) {
@@ -150,14 +197,16 @@
             }
         }
     </style>
+
 </head>
 <body>
 <nav>
     <div class="nav-left">WelcomeHome</div>
     <div class="nav-right">
         <span id="userName">${username}</span>
-        <button class="nav-btn" onclick="item()">Profile</button>
+<!--        <button class="nav-btn" onclick="viewCart()">Cart</button>-->
         <button class="nav-btn" onclick="orders()">OrderHistory</button>
+        <button class="nav-btn" onclick="logout()">Logout</button>
     </div>
 </nav>
 
@@ -201,7 +250,12 @@
             <li>Category: <span th:text="${item.mainCategory}"></span></li>
             <li>Subcategory: <span th:text="${item.subCategory}"></span></li>
         </ul>
-        <button class="add-to-order">Add to Order</button>
+<!--        <button class="add-to-cart" onclick="addToCart(document.getElementById('userName').textContent, '${item.itemID}')">Add to Cart</button>-->
+        <button class="add-to-cart"
+                th:attr="data-item-id=${item.itemID},
+                    onclick=|addToCart(document.getElementById('userName').textContent, this.getAttribute('data-item-id'))|">
+            Add to Order
+        </button>
     </div>
 </div>
 <script>
@@ -216,14 +270,14 @@
     }
 
     function orders() {
-        window.location.href = '/orderhistory';
+        window.location.href = '/orderhistory?username=' + encodeURIComponent(username);
     }
     async function fetchCustomerData() {
         const username = sessionStorage.getItem('username');
 
         if (!username) {
             alert("User not logged in!");
-            window.location.href = '/login';
+            window.location.href = '/customer-login';
             return;
         }
         try {
@@ -242,6 +296,62 @@
             console.error('Error during fetch:', error);
             alert("Unable to fetch customer data.");
         }
+    }
+
+    // async function addToCart(username, itemId) {
+    //
+    //     try {
+    //         const parsedItemId = parseInt(itemId, 10);
+    //
+    //         const response = await fetch('/customer/addToCart', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    //             body: new URLSearchParams({ username, itemId: parsedItemId })
+    //         });
+    //         const message = await response.text();
+    //         alert(message);
+    //     } catch (error) {
+    //         console.error('Error adding to cart:', error);
+    //         //alert('Failed to add item to cart.');
+    //     }
+    // }
+    async function addToCart(username, itemId) {
+        try {
+            const parsedItemId = parseInt(itemId, 10);
+
+            // Sending request to add the item to the order
+            const response = await fetch('/customer/addToCart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ username, itemId: parsedItemId })
+            });
+
+            const message = await response.text();
+            alert(message);
+
+            if (response.ok) {
+                // Remove the product item from the DOM after it's added to the order
+                const itemElement = document.querySelector(`[data-item-id="${itemId}"]`).closest('.product-item');
+                if (itemElement) {
+                    itemElement.remove();  // This will remove the product item from the page
+                }
+            }
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            alert('Failed to add item to cart.');
+        }
+    }
+
+
+    // function viewCart() {
+    //     //const username = document.getElementById('userName').textContent;
+    //     window.location.href = '/customer/cart?username=' + encodeURIComponent(username);
+    //     //window.location.href = `/customer/cart?username=${encodeURIComponent(username)}`;
+    // }
+
+    function logout() {
+        sessionStorage.removeItem('username');
+        window.location.href = '/customer-login';
     }
 
     fetchCustomerData();

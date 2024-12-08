@@ -22,7 +22,7 @@ public class OrderHistoryService {
         String query = """
             SELECT o.orderID,
                     o.orderDate,
-                    d.status,
+                    d.deliveredStatus,
                     d.date AS deliveryDate,
                     i.iDescription AS itemDescription
             FROM Ordered o
