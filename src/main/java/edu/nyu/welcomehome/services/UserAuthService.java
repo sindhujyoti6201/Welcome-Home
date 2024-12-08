@@ -1,6 +1,5 @@
 package edu.nyu.welcomehome.services;
 
-import edu.nyu.welcomehome.models.RoleType;
 import edu.nyu.welcomehome.models.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -75,25 +74,6 @@ public class UserAuthService {
         // store details in the Person's table
         saveUser(request, roleTypes);
     }
-
-
-    public void saveUserAsCustomer(RegisterRequest request) throws NoSuchAlgorithmException {
-        List<String> roleTypes = new ArrayList<>();
-        roleTypes.add("BORROWER");
-
-        // store details in the Person's table
-        saveUser(request, roleTypes);
-    }
-    public void saveUserAsVolunteer(RegisterRequest request) throws NoSuchAlgorithmException {
-        List<String> roleTypes = new ArrayList<>();
-        request.roleEnrolled().forEach(roleType -> roleTypes.add(roleType.getRole()));
-        roleTypes.add("STAFF");
-
-        // store details in the Person's table
-        saveUser(request, roleTypes);
-    }
-
-
 
     private void saveUser(RegisterRequest request, List<String> roleTypes) throws NoSuchAlgorithmException {
         Map<String, String> params = new HashMap<>();

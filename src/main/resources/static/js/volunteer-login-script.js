@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Redirect after a short delay
                         sessionStorage.setItem('username', data.username);
                         setTimeout(() => {
-                            window.location.href = "/dashboard";
+                            window.location.href = `/dashboard?username=${data.username}`;
                         }, 2000); // 2-second delay before redirection
                     } else {
                         console.error("Element '.login-register' not found. Cannot display success message.");

@@ -1,0 +1,1 @@
+INSERT INTO Item (iDescription, photo, color, isNew, hasPieces, material, mainCategory, subCategory) VALUES ({itemDescription}, {itemImage}, {color}, {isNew}, {hasPieces}, {material}, {mainCategory}, {subCategory})

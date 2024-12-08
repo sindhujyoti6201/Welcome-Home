@@ -1,4 +1,8 @@
-document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+document.addEventListener('DOMContentLoaded', () => {
+    const username = sessionStorage.getItem('username') || 'Guest';
+    console.log('Username:', username);  // Debugging line to check the value
+    document.getElementById('userName').textContent = username;
+});
 
 // Map frontend pages to database ENUM values
 const ROLE_MAPPING = {
@@ -47,7 +51,7 @@ async function checkAccess(page) {
 
             if (hasAccess) {
                 console.log('Access granted, redirecting to:', PAGE_URLS[page]);
-                window.location.href = PAGE_URLS[page];
+                window.location.href = `${page}?username=${username}`;
             } else {
                 console.log('Access denied, showing popup');
                 showPopup();

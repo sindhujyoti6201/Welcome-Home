@@ -1,121 +1,251 @@
-document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+// Track used locations
+let usedLocations = new Set();
 
-async function loadOrders() {
-    const username = sessionStorage.getItem('username');
-    console.log('Loading orders for:', username);  // Debug log
+const API_ENDPOINTS = {
+    CATEGORIES: '/api/categories',
+    SUBCATEGORIES: '/api/subcategories',
+    CHECK_LOCATION: '/api/check-location',
+    SUBMIT_DONATION: '/api/donations'
+};
+
+// Load staff name
+async function loadStaffName() {
     try {
-        const response = await fetch(`/api/supervise/orders/${username}`);
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to load orders');
-        }
-
-        const data = await response.json();
-        console.log('Received orders:', data);  // Debug log
-
-        if (!data.orders) {
-            throw new Error('No orders data received');
-        }
-
-        displayOrders(data.orders);
+        var donatedByElement = document.getElementById("donatedBy");
+        var username = donatedByElement.getAttribute("data-username");
+        document.getElementById('staffName').textContent = username || 'Staff';
     } catch (error) {
-        console.error('Error loading orders:', error);
-        document.getElementById('ordersList').innerHTML =
-            `<div class="detail-item">Error loading orders: ${error.message}</div>`;
+        console.error('Failed to load staff name:', error);
+        document.getElementById('staffName').textContent = 'Staff';
     }
 }
 
-function displayOrders(orders) {
-    const ordersList = document.getElementById('ordersList');
+// Load categories from database
+async function loadCategories() {
+    try {
+        const response = await fetch(API_ENDPOINTS.CATEGORIES);
+        const categories = await response.json();
 
-    if (orders.length === 0) {
-        ordersList.innerHTML = '<div class="detail-item">No orders requiring supervision at this time.</div>';
-        return;
-    }
+        const select = document.querySelector('select[name="mainCategory"]');
+        select.innerHTML = '<option value="">Select Category</option>';
 
-    ordersList.innerHTML = orders.map(order => {
-        const formattedDate = new Date(order.orderDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+        categories.forEach(category => {
+            const option = new Option(category, category);
+            select.add(option);
         });
+    } catch (error) {
+        console.error('Failed to load categories:', error);
+    }
+}
 
-        console.log('Order status:', order.orderStatus);  // Debug log
-        console.log('Current delivery status:', order.currentStatus);  // Debug log
+// Load subcategories based on selected category
+async function loadSubcategories() {
+    const mainCategory = document.querySelector('select[name="mainCategory"]').value;
 
-        return ` 
-            <div class="order-card">
-                <div class="order-header">
-                    <h3>Order #${order.orderID}</h3>
-                    <div class="status-group">
-                        <button class="update-btn" onclick="updateOrderStatus(${order.orderID}, '${order.client}')">
-                            Mark as In Transit
-                        </button>
-                    </div>
-                </div>
-                <div class="order-details">
-                    <div class="detail-item">
-                        <strong>Order Date:</strong> ${formattedDate}
-                    </div>
-                    <div class="detail-item">
-                        <strong>Client:</strong> ${order.client}
-                    </div>
-                    <div class="detail-item">
-                        <strong>Order Status:</strong> ${order.orderStatus}
-                    </div>
-                    <div class="detail-item">
-                        <strong>Delivery Status:</strong> ${order.currentStatus || 'NOT YET DELIVERED'}
-                    </div>
-                    <div class="detail-item">
-                        <strong>Notes:</strong> ${order.orderNotes || 'No notes'}
-                    </div>
+    try {
+        const response = await fetch(`${API_ENDPOINTS.SUBCATEGORIES}/${mainCategory}`);
+        const subcategories = await response.json();
+
+        const select = document.querySelector('select[name="subCategory"]');
+        select.innerHTML = '<option value="">Select Sub Category</option>';
+
+        subcategories.forEach(subcat => {
+            const option = new Option(subcat, subcat);
+            select.add(option);
+        });
+    } catch (error) {
+        console.error('Failed to load subcategories:', error);
+    }
+}
+
+// Image preview functionality
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image must be less than 5MB');
+            input.value = '';
+            preview.innerHTML = '<span class="placeholder-text">No image selected</span>';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Item preview">
+                <button type="button" class="button remove-image" onclick="removeImage()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '<span class="placeholder-text">No image selected</span>';
+    }
+}
+
+function removeImage() {
+    document.getElementById('itemImage').value = '';
+    document.getElementById('imagePreview').innerHTML =
+        '<span class="placeholder-text">No image selected</span>';
+}
+
+function togglePiecesSection() {
+    const hasPieces = document.getElementById('hasPieces').checked;
+    const piecesSection = document.getElementById('piecesSection');
+
+    piecesSection.style.display = hasPieces ? 'block' : 'none';
+
+    if (hasPieces && !document.querySelector('.piece-container')) {
+        addPieceForm();
+    }
+}
+
+function addPieceForm() {
+    const container = document.getElementById('piecesContainer');
+    const index = container.children.length;
+
+    const pieceForm = document.createElement('div');
+    pieceForm.innerHTML = createPieceFormHTML(index);
+    container.appendChild(pieceForm);
+}
+
+function createPieceFormHTML(index) {
+    return `
+        <div class="piece-container" id="piece-${index}">
+            <h4>Piece #${index + 1}</h4>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" name="piece_description_${index}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Dimensions (inches)</label>
+                <div class="grid-3">
+                    <input type="number" name="piece_length_${index}" placeholder="Length" required min="1">
+                    <input type="number" name="piece_width_${index}" placeholder="Width" required min="1">
+                    <input type="number" name="piece_height_${index}" placeholder="Height" required min="1">
                 </div>
             </div>
-        `;
-    }).join('');
+
+            <div class="form-group">
+                <label>Location *</label>
+                <div class="grid-2">
+                    <input type="number" 
+                           name="piece_room_${index}" 
+                           placeholder="Room Number" 
+                           required 
+                           min="1">
+                    <input type="number" 
+                           name="piece_shelf_${index}" 
+                           placeholder="Shelf Number" 
+                           required 
+                           min="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea name="piece_notes_${index}"></textarea>
+            </div>
+
+            ${index > 0 ? `
+                <button type="button" class="button" onclick="removePiece(${index})">
+                    Remove Piece
+                </button>
+            ` : ''}
+        </div>
+    `;
 }
 
-async function updateOrderStatus(orderId, client) {
-    const username = sessionStorage.getItem('username');
-    const currentDate = new Date().toISOString().split('T')[0];
+async function handleSubmit(event) {
+    event.preventDefault();
 
-    const requestBody = {
-        userName: client,  // Using client instead of supervisor username
-        orderID: orderId,
-        deliveredStatus: 'IN_TRANSIT',
-        date: currentDate
+    const formData = new FormData(event.target);
+
+    const donorName = sessionStorage.getItem('username');
+    const donateDate = new Date().toISOString().split('T')[0];
+    const itemDescription = formData.get("itemDescription");
+    const color = formData.get("color");
+    const material = formData.get("material");
+    const mainCategory = formData.get("mainCategory");
+    const subCategory = formData.get("subCategory");
+    const isNew = formData.get("isNew") === "on";
+    const hasPieces = formData.get("hasPieces") === "on";
+
+    // Collect pieces data if hasPieces is true
+    let pieces = [];
+    if (hasPieces) {
+        pieces = Array.from(document.querySelectorAll('.piece-container')).map((pieceContainer, index) => ({
+            pieceNum: index + 1,  // Set piece number (1-based index)
+            pieceDescription: pieceContainer.querySelector(`input[name="piece_description_${index}"]`).value,
+            length: parseFloat(pieceContainer.querySelector(`input[name="piece_length_${index}"]`).value),
+            width: parseFloat(pieceContainer.querySelector(`input[name="piece_width_${index}"]`).value),
+            height: parseFloat(pieceContainer.querySelector(`input[name="piece_height_${index}"]`).value),
+            roomNum: pieceContainer.querySelector(`input[name="piece_room_${index}"]`).value,
+            shelfNum: pieceContainer.querySelector(`input[name="piece_shelf_${index}"]`).value,
+            pNotes: pieceContainer.querySelector(`textarea[name="piece_notes_${index}"]`).value,
+        }));
+    }
+
+    // Prepare image as Base64
+    let itemImage = null;
+    const fileInput = document.getElementById('itemImage');
+    if (fileInput.files[0]) {
+        itemImage = await toBase64(fileInput.files[0]);
+    }
+
+    // Construct DonationRequest JSON
+    const donationRequest = {
+        donorName,
+        donateDate,
+        itemDescription,
+        color,
+        material,
+        mainCategory,
+        subCategory,
+        isNew,
+        hasPieces,
+        pieces,
+        itemImage,
     };
 
-    console.log('Sending update request:', requestBody);  // Debug log
-
     try {
-        const response = await fetch('/api/supervise/update-status', {
+        const response = await fetch(API_ENDPOINTS.SUBMIT_DONATION, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(donationRequest),
         });
 
-        const responseData = await response.json();
-        console.log('Response:', responseData);  // Debug log
-
-        if (!response.ok) {
-            throw new Error(responseData.error || 'Failed to update status');
+        if (response.ok) {
+            alert('Donation recorded successfully!');
+        } else {
+            alert('Failed to record donation.');
         }
-
-        await loadOrders();
-        alert('Order status updated successfully!');
-
     } catch (error) {
-        console.error('Error updating status:', error);
-        alert(`Failed to update status: ${error.message}`);
+        console.error('Error submitting donation:', error);
+        alert('Error submitting donation');
     }
 }
 
-function backToDashboard() {
-    window.location.href = '/dashboard';
-}
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("Calling categories");
+    loadStaffName();
+    loadCategories();  // Populate categories on page load
+});
 
-// Load orders when page loads
-loadOrders();
+// Helper function to convert file to Base64
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]); // Exclude the prefix
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
