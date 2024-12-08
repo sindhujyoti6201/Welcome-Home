@@ -23,11 +23,32 @@ public class DeliveryService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean isUserManager(String username) {
+        Map<String, String> params = Collections.singletonMap("username", username);
+        String sql = loadSqlFromFile("sql/delivery/check-manager-role.sql", params);
+
+        try {
+            int count = jdbcTemplate.queryForObject(sql, Integer.class);
+            return count > 0;
+        } catch (Exception e) {
+            logger.severe("Error checking manager role: " + e.getMessage());
+            return false;
+        }
+    }
+
     public Map<String, Object> getDeliveryOrders(String username) {
         Map<String, Object> result = new HashMap<>();
-
         Map<String, String> params = Collections.singletonMap("username", username);
-        String sql = loadSqlFromFile("sql/delivery/get-delivery-orders.sql", params);
+
+        // Check if user is manager
+        boolean isManager = isUserManager(username);
+        String sql;
+
+        if (isManager) {
+            sql = loadSqlFromFile("sql/delivery/get-all-intransit-orders.sql", params);
+        } else {
+            sql = loadSqlFromFile("sql/delivery/get-delivery-orders.sql", params);
+        }
 
         try (Connection conn = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -59,13 +80,21 @@ public class DeliveryService {
     @Transactional
     public boolean updateDeliveryStatus(String username, Long orderId, String action) {
         try {
-            if ("deliver".equals(action)) {
-                // Update delivery status
-                Map<String, String> deliveryParams = new HashMap<>();
-                deliveryParams.put("orderID", orderId.toString());
-                deliveryParams.put("username", username);
+            // Check if user is manager
+            boolean isManager = isUserManager(username);
 
-                String updateDeliverySql = loadSqlFromFile("sql/delivery/update-delivery-status.sql", deliveryParams);
+            if ("deliver".equals(action)) {
+                Map<String, String> params = new HashMap<>();
+                params.put("orderID", orderId.toString());
+
+                // Use different update SQL based on role
+                String updateDeliverySql;
+                if (isManager) {
+                    updateDeliverySql = loadSqlFromFile("sql/delivery/update-delivery-status-manager.sql", params);
+                } else {
+                    params.put("username", username);
+                    updateDeliverySql = loadSqlFromFile("sql/delivery/update-delivery-status.sql", params);
+                }
 
                 try (Connection conn = jdbcTemplate.getDataSource().getConnection();
                      PreparedStatement stmt = conn.prepareStatement(updateDeliverySql)) {
@@ -86,12 +115,17 @@ public class DeliveryService {
                 }
 
             } else if ("cancel".equals(action)) {
-                // Delete delivery record
-                Map<String, String> deleteParams = new HashMap<>();
-                deleteParams.put("orderID", orderId.toString());
-                deleteParams.put("username", username);
+                Map<String, String> params = new HashMap<>();
+                params.put("orderID", orderId.toString());
 
-                String deleteDeliverySql = loadSqlFromFile("sql/delivery/delete-delivery.sql", deleteParams);
+                // Use different delete SQL based on role
+                String deleteDeliverySql;
+                if (isManager) {
+                    deleteDeliverySql = loadSqlFromFile("sql/delivery/delete-delivery-manager.sql", params);
+                } else {
+                    params.put("username", username);
+                    deleteDeliverySql = loadSqlFromFile("sql/delivery/delete-delivery.sql", params);
+                }
 
                 try (Connection conn = jdbcTemplate.getDataSource().getConnection();
                      PreparedStatement stmt = conn.prepareStatement(deleteDeliverySql)) {

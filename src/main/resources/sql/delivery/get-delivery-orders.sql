@@ -8,3 +8,4 @@ FROM Delivered d
 WHERE d.userName = {username}
   AND d.deliveredStatus = 'IN TRANSIT'
 ORDER BY d.date DESC
+

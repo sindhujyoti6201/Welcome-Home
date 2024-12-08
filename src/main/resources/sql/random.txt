@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> --OR d.deliveredStatus IS NULL
 <html lang="en">
 
 <head>
