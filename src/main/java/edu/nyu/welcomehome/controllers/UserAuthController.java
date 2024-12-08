@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 public class UserAuthController {
     private static final Logger logger = LoggerFactory.getLogger(UserAuthController.class);
@@ -68,7 +67,7 @@ public class UserAuthController {
         try {
             logger.info(request.roleEnrolled().get(0).toString());
             userAuthService.saveUserAsVolunteer(request);
-                ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
+            ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
                     .status("success")
                     .message("Volunteer registered successfully!")
                     .build();
@@ -87,9 +86,10 @@ public class UserAuthController {
     @PostMapping(value = "/customer/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImmutableRegisterResponse> customerRegister(@RequestBody RegisterRequest request) {
         try {
-            userAuthService.saveUserAsVolunteer(request);
+            userAuthService.saveUserAsCustomer(request);
             ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
-                    .message("Volunteer registered successfully!")
+                    .status("success")
+                    .message("Customer registered successfully!")
                     .build();
 
             return ResponseEntity.ok(response);

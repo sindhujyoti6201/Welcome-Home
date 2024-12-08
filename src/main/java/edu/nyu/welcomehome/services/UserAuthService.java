@@ -59,7 +59,7 @@ public class UserAuthService {
         byte[] hashedPasswordBytes = md.digest(password.getBytes());
         return Base64.getEncoder().encodeToString(hashedPasswordBytes);
     }
-    
+
     public void saveUserAsCustomer(RegisterRequest request) throws NoSuchAlgorithmException {
         List<String> roleTypes = new ArrayList<>();
         roleTypes.add("BORROWER");
