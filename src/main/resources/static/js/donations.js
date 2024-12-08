@@ -235,6 +235,7 @@ async function handleSubmit(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("Calling categories");
     loadStaffName();
     loadCategories();  // Populate categories on page load
 });

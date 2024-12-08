@@ -13,11 +13,15 @@ import java.util.Set;
 @Controller
 public class MainController {
 
-    @Autowired
     private AnalyticsService analyticsService;
 
-    @Autowired
     private ItemService itemService;
+
+    @Autowired
+    public MainController(AnalyticsService analyticsService, ItemService itemService) {
+        this.analyticsService = analyticsService;
+        this.itemService = itemService;
+    }
 
     @GetMapping("/")
     public String home() {
@@ -50,12 +54,14 @@ public class MainController {
         return "dashboard";
     }
 
-    @GetMapping("/delivery")
-    public String delivery() {
+    @GetMapping("/delivering")
+    public String delivery(Model model,
+                           @RequestParam(required = false) String username) {
+        model.addAttribute("username", username);
         return "delivery";
     }
 
-    @GetMapping("/donations")
+    @GetMapping("/donation")
     public String donations(Model model,
                             @RequestParam(required = false) String mainCategory,
                             @RequestParam(required = false) String username) {
@@ -71,16 +77,20 @@ public class MainController {
 
         // Pass the username to the model for display
         model.addAttribute("username", username); // Added username to model
-        return "donations";
+        return "donation";
     }
 
-    @GetMapping("/supervise")
-    public String supervise() {
-        return "supervise";
+    @GetMapping("/supervising")
+    public String supervising(Model model,
+                              @RequestParam(required = false) String username) {
+        model.addAttribute("username", username);
+        return "supervising";
     }
 
     @GetMapping("/manager")
-    public String manager() {
+    public String manager(Model model,
+                          @RequestParam(required = false) String username) {
+        model.addAttribute("username", username);
         return "manager";
     }
 
@@ -105,7 +115,7 @@ public class MainController {
     public String range() {
         return "range";
     }
-  
+
     @GetMapping("/search-order")
     public String getSearchOrder() {
         return "search-order";

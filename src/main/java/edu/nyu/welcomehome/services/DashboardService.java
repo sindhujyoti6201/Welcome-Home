@@ -9,12 +9,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Logger;
+
+import static edu.nyu.welcomehome.utils.SqlFileLoader.loadSqlFromFile;
 
 @Service
 public class DashboardService {
-
+    private final Logger logger = Logger.getLogger(DashboardService.class.getName());
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -32,6 +34,7 @@ public class DashboardService {
         }
 
         List<String> roles = checkRoles(username);
+        logger.info("Found roles for " + username + ": " + roles);
 
         if (roles.isEmpty()) {
             throw new RuntimeException("No roles assigned to user: " + username);
@@ -41,10 +44,11 @@ public class DashboardService {
     }
 
     private boolean userExists(String username) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Person WHERE userName = ?";
+        Map<String, String> params = Collections.singletonMap("username", username);
+        String sql = loadSqlFromFile("sql/dashboard/check-user-exists.sql", params);
+
         try (Connection conn = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) > 0;
         }
@@ -52,17 +56,16 @@ public class DashboardService {
 
     private List<String> checkRoles(String username) throws SQLException {
         List<String> roles = new ArrayList<>();
-        String sql = "SELECT LOWER(r.roleID) as roleID " +
-                "FROM Act a " +
-                "JOIN Role r ON a.roleID = r.roleID " +
-                "WHERE LOWER(a.userName) = LOWER(?)";
+        Map<String, String> params = Collections.singletonMap("username", username);
+        String sql = loadSqlFromFile("sql/dashboard/check-user-roles.sql", params);
 
         try (Connection conn = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                roles.add(rs.getString("roleID"));
+                String role = rs.getString("roleID").trim();
+                logger.info("Found role for " + username + ": " + role);
+                roles.add(role);
             }
         }
         return roles;

@@ -34,6 +34,7 @@ public class DonationService {
         params.put("itemId", String.valueOf(itemId));
         params.put("donateDate", String.valueOf(donateDate));
         String sqlForAddingDonatedBy = loadSqlFromFile("sql/donated-by.sql", params);
+        logger.info("The query parsed for storing the donatedBy info is: " +sqlForAddingDonatedBy);
         jdbcTemplate.update(sqlForAddingDonatedBy);
     }
 
