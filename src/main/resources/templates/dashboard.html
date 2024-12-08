@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>WelcomeHome</title>
     <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
@@ -22,30 +25,30 @@
     </div>
 
     <div class="options-grid">
-        <div class="option-card" onclick="checkAccess('delivery')">
-            <h3>Manage Deliveries</h3>
-            <p>Track and manage order deliveries</p>
+        <div class="option-card" onclick="checkAccess('delivering')">
+            <h3>Delivery</h3>
+            <p>Track and update the delivery status of the order.</p>
         </div>
 
-        <div class="option-card" onclick="checkAccess('donations')">
-            <h3>Handle Donations</h3>
-            <p>Process and record donations</p>
+        <div class="option-card" onclick="checkAccess('donation')">
+            <h3>Donation</h3>
+            <p>Process and record donations.</p>
         </div>
 
-        <div class="option-card" onclick="checkAccess('supervise')">
-            <h3>Supervise Orders</h3>
-            <p>Oversee order processing</p>
+        <div class="option-card" onclick="checkAccess('supervising')">
+            <h3>Supervise</h3>
+            <p>Oversee and update the status of order processing.</p>
         </div>
 
         <div class="option-card" onclick="checkAccess('manager')">
             <h3>Manager Dashboard</h3>
-            <p>Access management tools</p>
+            <p>Approve or cancel the orders.</p>
         </div>
     </div>
 </div>
 
-<div class="overlay" id="overlay"></div>
-<div class="popup" id="registrationPopup">
+<div id="overlay" class="overlay"></div>
+<div id="registrationPopup" class="popup">
     <h3>Access Denied</h3>
     <p>You don't have permission to access this feature.</p>
     <button onclick="closePopup()">Close</button>

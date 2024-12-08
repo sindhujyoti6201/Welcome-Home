@@ -1,14 +1,23 @@
+
 package edu.nyu.welcomehome.services;
 
-import edu.nyu.welcomehome.models.ImmutableDelivered;
+import edu.nyu.welcomehome.models.Delivered;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
+import java.util.logging.Logger;
+
+import static edu.nyu.welcomehome.utils.SqlFileLoader.loadSqlFromFile;
 
 @Service
 public class SuperviseService {
+    private final Logger logger = Logger.getLogger(SuperviseService.class.getName());
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -19,95 +28,76 @@ public class SuperviseService {
     public Map<String, Object> getOrderDetails(String username) {
         Map<String, Object> result = new HashMap<>();
 
-        String orderSql = """
-            SELECT o.*, 
-                   COALESCE(d.status, 'pending') as currentStatus
-            FROM Ordered o
-            LEFT JOIN Delivered d ON o.orderID = d.orderID 
-            AND d.date = (
-                SELECT MAX(date) 
-                FROM Delivered 
-                WHERE orderID = o.orderID
-            )
-            WHERE o.supervisor = ?
-            ORDER BY o.orderDate DESC
-        """;
+        Map<String, String> params = Collections.singletonMap("username", username);
+        String sql = loadSqlFromFile("sql/supervise/get-orders.sql", params);
 
-        List<Map<String, Object>> orders = jdbcTemplate.queryForList(orderSql, username);
-        result.put("orders", orders);
+        try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
 
-        String statusSql = """
-            SELECT d.*
-            FROM Delivered d
-            INNER JOIN Ordered o ON d.orderID = o.orderID
-            WHERE o.supervisor = ?
-            ORDER BY d.date DESC
-        """;
-
-        List<Map<String, Object>> deliveryStatus = jdbcTemplate.queryForList(statusSql, username);
-        result.put("deliveryStatus", deliveryStatus);
+            List<Map<String, Object>> orders = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> order = new HashMap<>();
+                order.put("orderID", rs.getLong("orderID"));
+                order.put("orderDate", rs.getString("orderDate"));
+                order.put("orderNotes", rs.getString("orderNotes"));
+                order.put("supervisor", rs.getString("supervisor"));
+                order.put("client", rs.getString("client"));
+                order.put("orderStatus", rs.getString("orderStatus"));
+                order.put("currentStatus", rs.getString("currentStatus"));
+                orders.add(order);
+            }
+            result.put("orders", orders);
+        } catch (Exception e) {
+            logger.severe("Error getting order details: " + e.getMessage());
+            throw new RuntimeException("Failed to get order details", e);
+        }
 
         return result;
     }
 
-    public boolean updateDeliveryStatus(ImmutableDelivered delivered) {
+    @Transactional
+    public boolean updateDeliveryStatus(Delivered delivered) {
         try {
-            String getClientSql = """
-                SELECT client FROM Ordered WHERE orderID = ?
-            """;
+            // Check delivery status
+            Map<String, String> checkParams = Collections.singletonMap("orderID", String.valueOf(delivered.getOrderID()));
+            String checkSql = loadSqlFromFile("sql/supervise/check-delivery-status.sql", checkParams);
 
-            String client = jdbcTemplate.queryForObject(
-                    getClientSql,
-                    String.class,
-                    delivered.orderID()
-            );
-
-            if (client == null) {
-                throw new IllegalArgumentException("Invalid orderID: Client not found");
+            String currentStatus = null;
+            try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    currentStatus = rs.getString("deliveredStatus");
+                }
             }
 
-            String checkSql = """
-                SELECT COUNT(*) FROM Delivered 
-                WHERE userName = ? AND orderID = ?
-            """;
+            logger.info("Current status of order " + delivered.getOrderID() + ": " + currentStatus);
 
-            int exists = jdbcTemplate.queryForObject(
-                    checkSql,
-                    Integer.class,
-                    client,
-                    delivered.orderID()
-            );
-
-            if (exists > 0) {
-                String updateSql = """
-                    UPDATE Delivered 
-                    SET status = ?, date = ? 
-                    WHERE userName = ? AND orderID = ?
-                """;
-
-                return jdbcTemplate.update(
-                        updateSql,
-                        delivered.status(),
-                        delivered.date(),
-                        client,
-                        delivered.orderID()
-                ) > 0;
-            } else {
-                String insertSql = """
-                    INSERT INTO Delivered (userName, orderID, status, date)
-                    VALUES (?, ?, ?, ?)
-                """;
-
-                return jdbcTemplate.update(
-                        insertSql,
-                        client,
-                        delivered.orderID(),
-                        delivered.status(),
-                        delivered.date()
-                ) > 0;
+            if (!"NOT YET DELIVERED".equals(currentStatus)) {
+                logger.warning("Order " + delivered.getOrderID() + " is not in 'NOT YET DELIVERED' status.");
+                return false;
             }
+
+            // Update to IN_TRANSIT
+            Map<String, String> updateParams = new HashMap<>();
+            updateParams.put("date", delivered.getDate());
+            updateParams.put("orderID", String.valueOf(delivered.getOrderID()));
+
+            String updateSql = loadSqlFromFile("sql/supervise/update-delivery-status.sql", updateParams);
+
+            try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                int rowsUpdated = stmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    logger.info("Successfully updated the status of order " + delivered.getOrderID() + " to 'IN_TRANSIT'.");
+                    return true;
+                }
+                return false;
+            }
+
         } catch (Exception e) {
-            System.out.println("Error updating delivery status: " + e.getMessage());
+            logger.severe("Error updating delivery status: " + e.getMessage());
             return false;
         }
     }

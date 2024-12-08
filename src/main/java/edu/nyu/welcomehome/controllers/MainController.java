@@ -47,14 +47,14 @@ public class MainController {
         return "delivery";
     }
 
-    @GetMapping("/donations")
-    public String donations() {
-        return "donations";
+    @GetMapping("/donation")
+    public String donation() {
+        return "donation";
     }
 
-    @GetMapping("/supervise")
-    public String supervise() {
-        return "supervise";
+    @GetMapping("/supervising")
+    public String supervising() {
+        return "supervising";
     }
 
     @GetMapping("/manager")

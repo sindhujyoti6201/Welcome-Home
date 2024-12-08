@@ -76,6 +76,25 @@ public class UserAuthService {
         saveUser(request, roleTypes);
     }
 
+
+    public void saveUserAsCustomer(RegisterRequest request) throws NoSuchAlgorithmException {
+        List<String> roleTypes = new ArrayList<>();
+        roleTypes.add("BORROWER");
+
+        // store details in the Person's table
+        saveUser(request, roleTypes);
+    }
+    public void saveUserAsVolunteer(RegisterRequest request) throws NoSuchAlgorithmException {
+        List<String> roleTypes = new ArrayList<>();
+        request.roleEnrolled().forEach(roleType -> roleTypes.add(roleType.getRole()));
+        roleTypes.add("STAFF");
+
+        // store details in the Person's table
+        saveUser(request, roleTypes);
+    }
+
+
+
     private void saveUser(RegisterRequest request, List<String> roleTypes) throws NoSuchAlgorithmException {
         Map<String, String> params = new HashMap<>();
         params.put("username", request.username());
