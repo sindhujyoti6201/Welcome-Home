@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <style>
+        /* Existing styles */
+        :root {
+            --color-primary: #2f2f2f;
+            --color-background: #e3d4c3;
+            --color-secondary: #c5b5a4;
+            --color-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .nav-left {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-white);
+        }
+
+        .nav-btn {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--color-primary);
+            color: var(--color-secondary);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .cart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .cart-item {
+            border: 1px solid var(--color-secondary);
+            padding: 20px;
+            background-color: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-5px);
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+        }
+
+        .cart-item h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .cart-item p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .cart-item li {
+            margin-bottom: 5px;
+        }
+
+        .remove-btn {
+            margin-top: 10px;
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background-color: var(--color-primary);
+            color: var(--color-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-left">WelcomeHome</div>
+    <div>
+        <span id="userName">${username}</span>
+        <button class="nav-btn" onclick="window.location.href='/customer'">Back to Shop</button>
+        <button class="nav-btn" onclick="confirmOrder()">Confirm Order</button>
+    </div>
+</nav>
+
+<h1>Your Cart</h1>
+<div class="cart-container">
+    <!-- Loop through cart items -->
+    <div class="cart-item" th:each="item : ${cartItems}">
+        <h3 th:text="'Item ID: ' + ${item.itemID}"></h3>
+        <p th:text="${item.iDescription}"></p>
+        <ul>
+            <li>Color: <span th:text="${item.color}"></span></li>
+            <li>Material: <span th:text="${item.material}"></span></li>
+        </ul>
+        <!-- Pass item ID to the removeItem function -->
+<!--        <button class="remove-btn" onclick="removeItem('${item.itemID}')">Remove</button>-->
+        <button class="remove-btn"
+                th:attr="data-item-id=${item.itemID},
+                    onclick=|removeItem(this.getAttribute('data-item-id'))|">
+            Remove
+        </button>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username') || sessionStorage.getItem('username') || 'Guest';
+    // Confirm order function
+    function confirmOrder() {
+        alert('Order confirmed! Thank you for shopping.');
+        // Add logic for order confirmation, e.g., redirect or API call
+    }
+
+    function removeItem(itemID) {
+        console.log("Removing item with ID: " + itemID);
+        console.log("For user: " + username); // Make sure 'username' is populated
+
+        if (confirm('Are you sure you want to remove this item?')) {
+            fetch('/customer/cart/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `username=${username}&itemID=${itemID}`
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to remove item.');
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message); // Show success message
+                    const itemElement = document.getElementById(itemID);
+                    if (itemElement) {
+                        itemElement.remove(); // Remove item element from DOM
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while removing the item.');
+                });
+        }
+    }
+</script>
+</body>
+</html>
+
+

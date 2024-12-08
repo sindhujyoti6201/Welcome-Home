@@ -1,31 +1,39 @@
 package edu.nyu.welcomehome.controllers;
 
-import edu.nyu.welcomehome.services.CustomerService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import edu.nyu.welcomehome.services.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
+@RequestMapping("/api/customer")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final ItemService itemService;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
+    @Autowired
+    public CustomerController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
-    @GetMapping("/viewprofile")
-    public String getCustomerDetails(Model model) {
-        // Fetch the customer data (you can change 'john_doe' to dynamic username as needed)
-        List<Map<String, Object>> customerDetails = customerService.getCustomerDetails("john_doe");
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getCustomerData(@PathVariable String username) {
+        // Assuming `getCustomerData` is a method in your service to fetch customer data
+        Map<String, Object> customerData = itemService.getCustomerData(username);
 
-        // Add the data to the model so it can be used in the template
-        model.addAttribute("customerDetails", customerDetails);
-
-        // Return the 'customer.html' template
-        return "viewprofile";
+        if (customerData != null) {
+            return ResponseEntity.ok(customerData);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Customer not found: " + username));
+        }
     }
 }
+
+
