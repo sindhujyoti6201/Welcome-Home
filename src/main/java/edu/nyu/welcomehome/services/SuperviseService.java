@@ -1,4 +1,3 @@
-
 package edu.nyu.welcomehome.services;
 
 import edu.nyu.welcomehome.models.Delivered;
@@ -25,17 +24,29 @@ public class SuperviseService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Map<String, Object> getOrderDetails(String username) {
-        Map<String, Object> result = new HashMap<>();
-
+    public boolean isUserManager(String username) {
         Map<String, String> params = Collections.singletonMap("username", username);
-        String sql = loadSqlFromFile("sql/supervise/get-orders.sql", params);
+        String sql = loadSqlFromFile("sql/supervise/check-manager-role.sql", params);
+
+        try {
+            int count = jdbcTemplate.queryForObject(sql, Integer.class);
+            return count > 0;
+        } catch (Exception e) {
+            logger.severe("Error checking manager role: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Map<String, Object> getAllInProgressOrders() {
+        Map<String, Object> result = new HashMap<>();
+        String sql = loadSqlFromFile("sql/supervise/get-all-inprogress-orders.sql", Collections.emptyMap());
 
         try (Connection conn = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
 
+            ResultSet rs = stmt.executeQuery();
             List<Map<String, Object>> orders = new ArrayList<>();
+
             while (rs.next()) {
                 Map<String, Object> order = new HashMap<>();
                 order.put("orderID", rs.getLong("orderID"));
@@ -48,6 +59,39 @@ public class SuperviseService {
                 orders.add(order);
             }
             result.put("orders", orders);
+
+        } catch (Exception e) {
+            logger.severe("Error getting all in-progress orders: " + e.getMessage());
+            throw new RuntimeException("Failed to get in-progress orders", e);
+        }
+
+        return result;
+    }
+
+    public Map<String, Object> getOrderDetails(String username) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, String> params = Collections.singletonMap("username", username);
+        String sql = loadSqlFromFile("sql/supervise/get-supervisor-orders.sql", params);
+
+        try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+            List<Map<String, Object>> orders = new ArrayList<>();
+
+            while (rs.next()) {
+                Map<String, Object> order = new HashMap<>();
+                order.put("orderID", rs.getLong("orderID"));
+                order.put("orderDate", rs.getString("orderDate"));
+                order.put("orderNotes", rs.getString("orderNotes"));
+                order.put("supervisor", rs.getString("supervisor"));
+                order.put("client", rs.getString("client"));
+                order.put("orderStatus", rs.getString("orderStatus"));
+                order.put("currentStatus", rs.getString("currentStatus"));
+                orders.add(order);
+            }
+            result.put("orders", orders);
+
         } catch (Exception e) {
             logger.severe("Error getting order details: " + e.getMessage());
             throw new RuntimeException("Failed to get order details", e);
@@ -68,32 +112,28 @@ public class SuperviseService {
                  PreparedStatement stmt = conn.prepareStatement(checkSql)) {
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    currentStatus = rs.getString("deliveredStatus");
+                    currentStatus = rs.getString("currentStatus");
                 }
             }
 
-            logger.info("Current status of order " + delivered.getOrderID() + ": " + currentStatus);
-
-            if (!"NOT YET DELIVERED".equals(currentStatus)) {
+            if (currentStatus != null && !"NOT YET DELIVERED".equals(currentStatus)) {
                 logger.warning("Order " + delivered.getOrderID() + " is not in 'NOT YET DELIVERED' status.");
                 return false;
             }
 
-            // Update to IN_TRANSIT
+            // Update delivery status
             Map<String, String> updateParams = new HashMap<>();
-            updateParams.put("date", delivered.getDate());
+            updateParams.put("userName", delivered.getUserName());
             updateParams.put("orderID", String.valueOf(delivered.getOrderID()));
+            updateParams.put("date", delivered.getDate());
 
             String updateSql = loadSqlFromFile("sql/supervise/update-delivery-status.sql", updateParams);
 
             try (Connection conn = jdbcTemplate.getDataSource().getConnection();
                  PreparedStatement stmt = conn.prepareStatement(updateSql)) {
-                int rowsUpdated = stmt.executeUpdate();
-                if (rowsUpdated > 0) {
-                    logger.info("Successfully updated the status of order " + delivered.getOrderID() + " to 'IN_TRANSIT'.");
-                    return true;
-                }
-                return false;
+                int rowsAffected = stmt.executeUpdate();
+                logger.info("Updated " + rowsAffected + " rows for order " + delivered.getOrderID());
+                return rowsAffected > 0;
             }
 
         } catch (Exception e) {

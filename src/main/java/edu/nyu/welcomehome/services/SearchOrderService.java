@@ -33,13 +33,13 @@ public class SearchOrderService {
         if (clientName != null && !clientName.isEmpty() && orderId != null && !orderId.isEmpty()) {
             params.put("username", clientName);
             params.put("orderID", orderId);
-            sqlFilePath = "sql/search-orders-by-orderId-and-username.sql";
+            sqlFilePath = "sql/item-search/search-orders-by-orderId-and-username.sql";
         } else if (clientName != null && !clientName.isEmpty()) {
             params.put("username", clientName);
-            sqlFilePath = "sql/search-orders-by-username.sql";
+            sqlFilePath = "sql/item-search/search-orders-by-username.sql";
         } else if (orderId != null && !orderId.isEmpty()) {
             params.put("orderID", orderId);
-            sqlFilePath = "sql/search-orders-by-orderId.sql";
+            sqlFilePath = "sql/item-search/search-orders-by-orderId.sql";
         } else {
             throw new IllegalArgumentException("clientName or orderId is null");
         }
@@ -79,7 +79,7 @@ public class SearchOrderService {
     private List<PieceResponse> fetchPieces(Integer itemId) {
         Map<String, String> params = Collections.singletonMap("ItemID", String.valueOf(itemId));
 
-        String query = loadSqlFromFile("sql/fetch-pieces.sql", params);
+        String query = loadSqlFromFile("sql/item-search/fetch-pieces.sql", params);
         logger.info("The query parsed for searching the pieces is: " + query);
 
         RowMapper<PieceResponse> rowMapper = (rs, rowNum) ->

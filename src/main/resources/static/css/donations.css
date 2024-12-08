@@ -4,6 +4,7 @@
     --secondary-color: #c5b5a4;
     --white: #ffffff;
     --shadow: 0 2px 4px rgba(47, 47, 47, 0.1);
+    --text-black: #1a1a1a; /* Updated for more intense black text */
     --spacing: 20px;
     --border-radius: 8px;
 }
@@ -15,6 +16,11 @@
     box-sizing: border-box;
 }
 
+header {
+    background-color: #c5b5a4;
+    padding: 10px 20px;
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -22,10 +28,20 @@ body {
     color: var(--primary-color);
 }
 
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--background-color);
+    background-image: url('/img/donations/donations.jpg');
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-attachment: fixed; /* Makes the background static during scrolling */
+    color: var(--primary-color);
+}
+
 /* Navbar Styles */
 .navbar {
-    background-color: var(--primary-color);
-    color: var(--white);
+    color: #2f2f2f;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -42,7 +58,7 @@ body {
 }
 
 .staff-name {
-    color: var(--background-color);
+    color: #2f2f2f;
     font-size: 1.1em;
 }
 
@@ -54,11 +70,37 @@ body {
 }
 
 .form-section {
-    background-color: var(--white);
+    color: #1a1a1a;
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent white */
     border-radius: var(--border-radius);
     padding: var(--spacing);
     margin-bottom: var(--spacing);
     box-shadow: var(--shadow);
+    backdrop-filter: blur(10px); /* Adds a subtle blur effect to the background */
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent white */
+    backdrop-filter: blur(5px); /* Optional: Adds blur effect */
+    color: var(--primary-color); /* Ensures text is readable */
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.6); /* Slightly less transparent on focus */
 }
 
 .section-title {
@@ -170,7 +212,7 @@ textarea:focus {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: #fafafa;
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent background */
 }
 
 .image-preview img {
@@ -180,7 +222,7 @@ textarea:focus {
 }
 
 .placeholder-text {
-    color: #999;
+    color: black;
     font-size: 0.9rem;
 }
 
@@ -278,4 +320,20 @@ input[type="file"] {
     padding: 1rem;
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #c5b5a4;
+    color: #2f2f2f;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+footer #year {
+    font-weight: bold;
 }

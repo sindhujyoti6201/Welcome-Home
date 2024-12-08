@@ -2,15 +2,12 @@ package edu.nyu.welcomehome.services;
 
 import edu.nyu.welcomehome.models.Piece;
 import edu.nyu.welcomehome.models.request.DonationRequest;
-import jakarta.annotation.Nullable;
-import org.immutables.value.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
-import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.*;
@@ -33,7 +30,7 @@ public class DonationService {
         params.put("donorName", donorName);
         params.put("itemId", String.valueOf(itemId));
         params.put("donateDate", String.valueOf(donateDate));
-        String sqlForAddingDonatedBy = loadSqlFromFile("sql/donated-by.sql", params);
+        String sqlForAddingDonatedBy = loadSqlFromFile("sql/donations/donated-by.sql", params);
         logger.info("The query parsed for storing the donatedBy info is: " +sqlForAddingDonatedBy);
         jdbcTemplate.update(sqlForAddingDonatedBy);
     }
@@ -54,7 +51,7 @@ public class DonationService {
             params.put("itemImage", Base64.getEncoder().encodeToString(itemImage)); // Encode to Base64 if needed
         }
 
-        String sqlQuery = loadSqlFromFile("sql/submit-item-donation.sql", params);
+        String sqlQuery = loadSqlFromFile("sql/donations/submit-item-donation.sql", params);
         logger.info("The parsed query for submitting a item is: " + sqlQuery);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> con.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS), keyHolder);
@@ -81,7 +78,7 @@ public class DonationService {
                 pieceParams.put("shelfNum", piece.shelfNum());
                 pieceParams.put("pNotes", piece.pNotes());
 
-                String sqlQueryForPieces = loadSqlFromFile("sql/submit-piece-donation.sql", pieceParams);
+                String sqlQueryForPieces = loadSqlFromFile("sql/donations/submit-piece-donation.sql", pieceParams);
                 logger.info("The parsed query for submitting a piece with pieceNum "+piece.pieceNum()+" is: " + sqlQueryForPieces);
                 jdbcTemplate.update(sqlQueryForPieces);
             }
