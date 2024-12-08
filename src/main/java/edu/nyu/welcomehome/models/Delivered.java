@@ -1,14 +1,21 @@
 package edu.nyu.welcomehome.models;
 
-import org.immutables.value.Value;
+public class Delivered {
+    private String userName;
+    private Long orderID;
+    private String deliveredStatus;
+    private String date;
 
-@Value.Immutable
-public interface Delivered {
-    String userName();
+    // Getters and Setters
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
-    Long orderID();
+    public Long getOrderID() { return orderID; }
+    public void setOrderID(Long orderID) { this.orderID = orderID; }
 
-    String status();
+    public String getDeliveredStatus() { return deliveredStatus; }
+    public void setDeliveredStatus(String deliveredStatus) { this.deliveredStatus = deliveredStatus; }
 
-    String date();
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
 }

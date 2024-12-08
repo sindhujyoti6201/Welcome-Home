@@ -44,6 +44,7 @@ public class ItemController {
         return "customer"; // Return the customer view
     }
 
+
     @PostMapping("/addToCart")
     @ResponseBody
     public String addToCart(@RequestParam String username, @RequestParam String itemId) {
@@ -51,10 +52,5 @@ public class ItemController {
         return added ? "Item added to cart successfully!" : "Failed to add item to cart.";
     }
 
-//    @GetMapping("/cart")
-//    public String viewCart(Model model, @RequestParam String username) {
-//        List<Map<String, Object>> cartItems = itemService.getCartItems(username);
-//        model.addAttribute("cartItems", cartItems);
-//        return "cart"; // A new Thymeleaf template to display the cart items
-//    }
 }
+

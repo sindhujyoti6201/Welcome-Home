@@ -67,6 +67,7 @@ public class UserAuthController {
         try {
             logger.info(request.roleEnrolled().get(0).toString());
             userAuthService.saveUserAsVolunteer(request);
+
             ImmutableRegisterResponse response = ImmutableRegisterResponse.builder()
                     .status("success")
                     .message("Volunteer registered successfully!")

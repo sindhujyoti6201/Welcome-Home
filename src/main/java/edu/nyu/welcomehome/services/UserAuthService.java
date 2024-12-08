@@ -1,6 +1,5 @@
 package edu.nyu.welcomehome.services;
 
-import edu.nyu.welcomehome.models.RoleType;
 import edu.nyu.welcomehome.models.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

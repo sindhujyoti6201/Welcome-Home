@@ -1,72 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WelcomeHome - Manage Deliveries</title>
+    <title>Delivery Orders - WelcomeHome</title>
     <link rel="stylesheet" href="/css/delivery.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2f2f2f;
+            --color-background: #e3d4c3;
+            --color-secondary: #c5b5a4;
+            --color-white: #ffffff;
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-background);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: var(--color-primary);
+            padding: 1rem 3rem;
+            color: var(--color-white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        #userName {
+            color: var(--color-white);
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .back-btn {
+            background: var(--color-secondary);
+            color: var(--color-primary);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .main-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .page-title {
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .orders-grid {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .order-card {
+            background: var(--color-white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+
+        .order-details {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .detail-item {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .deliver-btn {
+            background: var(--color-success);
+            color: var(--color-white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            background: var(--color-danger);
+            color: var(--color-white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <div class="header-content">
-        <h1>Manage Deliveries</h1>
-        <div class="user-section">
-                <span class="user-info">
-                    <span class="user-title">Staff:</span>
-                    <span id="userName"></span>
-                </span>
-            <button class="back-btn" id="backBtn">
-                <span class="back-icon">←</span>
-                Back
-            </button>
-        </div>
+<nav class="navbar">
+    <div class="app-name">WelcomeHome</div>
+    <div class="user-info">
+        <span id="userName"></span>
+        <button class="back-btn" onclick="backToDashboard()">Back to Dashboard</button>
     </div>
-</header>
-
-<main class="container">
-    <!-- Search Section -->
-    <section class="card search-section">
-        <h2>Find Order</h2>
-        <form id="searchForm" class="search-container">
-            <div class="search-input-group">
-                <input type="text"
-                       id="searchInput"
-                       placeholder="Search by Order ID or Client Username"
-                       class="input-field"
-                       required>
-                <button type="submit" class="btn-primary">Search</button>
-            </div>
-        </form>
-    </section>
-
-    <!-- Order Details Section -->
-    <section class="order-details" id="orderDetailsSection">
-        <!-- Dynamic content will be inserted here -->
-    </section>
-
-    <!-- Order Items Section -->
-    <section class="card items-section">
-        <h2>Order Items and Locations</h2>
-        <div class="table-container">
-            <table id="itemsTable">
-                <thead>
-                <tr>
-                    <th>Item ID</th>
-                    <th>Description</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Dynamic content will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </section>
+</nav>
+<main class="main-content">
+    <h1 class="page-title">Delivery Orders</h1>
+    <div class="orders-grid" id="ordersList">
+        <!-- Orders will be populated here -->
+    </div>
 </main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 <script src="/js/delivery.js"></script>
 </body>
 </html>
