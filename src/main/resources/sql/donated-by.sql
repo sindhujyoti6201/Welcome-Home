@@ -1,0 +1,1 @@
+INSERT INTO  DonatedBy (userName, ItemID, donateDate) values ({donorName}, {itemId}, {donateDate})

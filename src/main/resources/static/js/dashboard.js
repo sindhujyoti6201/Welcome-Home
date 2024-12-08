@@ -1,4 +1,8 @@
-document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+document.addEventListener('DOMContentLoaded', () => {
+    const username = sessionStorage.getItem('username') || 'Guest';
+    console.log('Username:', username);  // Debugging line to check the value
+    document.getElementById('userName').textContent = username;
+});
 
 async function checkAccess(page) {
     const username = sessionStorage.getItem('username');
@@ -28,7 +32,7 @@ async function checkAccess(page) {
             }
 
             if (hasAccess) {
-                window.location.href = `${page}`;
+                window.location.href = `${page}?username=${username}`;
             } else {
                 showPopup();
             }
@@ -40,7 +44,6 @@ async function checkAccess(page) {
         showPopup();
     }
 }
-
 
 function showPopup() {
     document.getElementById('overlay').style.display = 'block';

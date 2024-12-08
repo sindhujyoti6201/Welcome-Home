@@ -22,7 +22,7 @@
 
             <div class="form-group">
                 <label>Description *</label>
-                <textarea name="description" required></textarea>
+                <textarea name="itemDescription" required></textarea>
             </div>
 
             <div class="grid-2">
@@ -85,6 +85,8 @@
             </div>
             <div id="piecesContainer"></div>
         </div>
+
+        <div id="donatedBy" th:data-username="${username}"></div>
 
         <button type="submit" class="button">Record Donation</button>
     </form>

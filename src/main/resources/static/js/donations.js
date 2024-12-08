@@ -2,7 +2,6 @@
 let usedLocations = new Set();
 
 const API_ENDPOINTS = {
-    STAFF_INFO: '/api/staff/current',
     CATEGORIES: '/api/categories',
     SUBCATEGORIES: '/api/subcategories',
     CHECK_LOCATION: '/api/check-location',
@@ -12,9 +11,9 @@ const API_ENDPOINTS = {
 // Load staff name
 async function loadStaffName() {
     try {
-        const response = await fetch(API_ENDPOINTS.STAFF_INFO);
-        const data = await response.json();
-        document.getElementById('staffName').textContent = data.name || 'Staff';
+        var donatedByElement = document.getElementById("donatedBy");
+        var username = donatedByElement.getAttribute("data-username");
+        document.getElementById('staffName').textContent = username || 'Staff';
     } catch (error) {
         console.error('Failed to load staff name:', error);
         document.getElementById('staffName').textContent = 'Staff';
@@ -30,8 +29,7 @@ async function loadCategories() {
         const select = document.querySelector('select[name="mainCategory"]');
         select.innerHTML = '<option value="">Select Category</option>';
 
-        const uniqueCategories = [...new Set(categories.map(cat => cat.mainCategory))];
-        uniqueCategories.forEach(category => {
+        categories.forEach(category => {
             const option = new Option(category, category);
             select.add(option);
         });
@@ -40,7 +38,7 @@ async function loadCategories() {
     }
 }
 
-// Load subcategories
+// Load subcategories based on selected category
 async function loadSubcategories() {
     const mainCategory = document.querySelector('select[name="mainCategory"]').value;
 
@@ -52,7 +50,7 @@ async function loadSubcategories() {
         select.innerHTML = '<option value="">Select Sub Category</option>';
 
         subcategories.forEach(subcat => {
-            const option = new Option(subcat.subCategory, subcat.subCategory);
+            const option = new Option(subcat, subcat);
             select.add(option);
         });
     } catch (error) {
@@ -97,6 +95,26 @@ function removeImage() {
         '<span class="placeholder-text">No image selected</span>';
 }
 
+function togglePiecesSection() {
+    const hasPieces = document.getElementById('hasPieces').checked;
+    const piecesSection = document.getElementById('piecesSection');
+
+    piecesSection.style.display = hasPieces ? 'block' : 'none';
+
+    if (hasPieces && !document.querySelector('.piece-container')) {
+        addPieceForm();
+    }
+}
+
+function addPieceForm() {
+    const container = document.getElementById('piecesContainer');
+    const index = container.children.length;
+
+    const pieceForm = document.createElement('div');
+    pieceForm.innerHTML = createPieceFormHTML(index);
+    container.appendChild(pieceForm);
+}
+
 function createPieceFormHTML(index) {
     return `
         <div class="piece-container" id="piece-${index}">
@@ -123,16 +141,13 @@ function createPieceFormHTML(index) {
                            name="piece_room_${index}" 
                            placeholder="Room Number" 
                            required 
-                           min="1"
-                           onchange="checkLocationAvailability(${index})">
+                           min="1">
                     <input type="number" 
                            name="piece_shelf_${index}" 
                            placeholder="Shelf Number" 
                            required 
-                           min="1"
-                           onchange="checkLocationAvailability(${index})">
+                           min="1">
                 </div>
-                <div class="location-status" id="locationStatus_${index}"></div>
             </div>
 
             <div class="form-group">
@@ -149,124 +164,87 @@ function createPieceFormHTML(index) {
     `;
 }
 
-async function checkLocationAvailability(index) {
-    const roomInput = document.querySelector(`[name="piece_room_${index}"]`);
-    const shelfInput = document.querySelector(`[name="piece_shelf_${index}"]`);
-    const statusDiv = document.getElementById(`locationStatus_${index}`);
-
-    const room = roomInput.value;
-    const shelf = shelfInput.value;
-
-    if (!room || !shelf) return;
-
-    const locationKey = `${room}-${shelf}`;
-
-    try {
-        if (usedLocations.has(locationKey)) {
-            statusDiv.textContent = "Location already assigned to another piece";
-            statusDiv.className = "location-status unavailable";
-            return false;
-        }
-
-        const response = await fetch(`${API_ENDPOINTS.CHECK_LOCATION}?room=${room}&shelf=${shelf}`);
-        const data = await response.json();
-
-        if (data.available) {
-            statusDiv.textContent = "Location available";
-            statusDiv.className = "location-status available";
-            usedLocations.add(locationKey);
-            return true;
-        } else {
-            statusDiv.textContent = "Location unavailable";
-            statusDiv.className = "location-status unavailable";
-            return false;
-        }
-    } catch (error) {
-        statusDiv.textContent = "Error checking location";
-        statusDiv.className = "location-status unavailable";
-        return false;
-    }
-}
-
-function togglePiecesSection() {
-    const hasPieces = document.getElementById('hasPieces').checked;
-    const piecesSection = document.getElementById('piecesSection');
-
-    piecesSection.style.display = hasPieces ? 'block' : 'none';
-
-    if (hasPieces && !document.querySelector('.piece-container')) {
-        addPieceForm();
-    }
-}
-
-function addPieceForm() {
-    const container = document.getElementById('piecesContainer');
-    const index = container.children.length;
-
-    const pieceForm = document.createElement('div');
-    pieceForm.innerHTML = createPieceFormHTML(index);
-    container.appendChild(pieceForm);
-}
-
-function removePiece(index) {
-    const piece = document.getElementById(`piece-${index}`);
-
-    const room = piece.querySelector(`[name="piece_room_${index}"]`).value;
-    const shelf = piece.querySelector(`[name="piece_shelf_${index}"]`).value;
-    usedLocations.delete(`${room}-${shelf}`);
-
-    piece.remove();
-
-    const pieces = document.querySelectorAll('.piece-container');
-    pieces.forEach((piece, idx) => {
-        piece.querySelector('h4').textContent = `Piece #${idx + 1}`;
-    });
-}
-
 async function handleSubmit(event) {
     event.preventDefault();
 
-    if (document.getElementById('hasPieces').checked) {
-        const pieces = document.querySelectorAll('.piece-container');
-        for (let piece of pieces) {
-            const statusDiv = piece.querySelector('.location-status');
-            if (!statusDiv.classList.contains('available')) {
-                alert('Please ensure all piece locations are valid');
-                return;
-            }
-        }
-    }
-
     const formData = new FormData(event.target);
 
-    // Add file to FormData if exists
-    const imageFile = document.getElementById('itemImage').files[0];
-    if (imageFile) {
-        formData.append('itemImage', imageFile);
+    const donorName = sessionStorage.getItem('username');
+    const donateDate = new Date().toISOString().split('T')[0];
+    const itemDescription = formData.get("itemDescription");
+    const color = formData.get("color");
+    const material = formData.get("material");
+    const mainCategory = formData.get("mainCategory");
+    const subCategory = formData.get("subCategory");
+    const isNew = formData.get("isNew") === "on";
+    const hasPieces = formData.get("hasPieces") === "on";
+
+    // Collect pieces data if hasPieces is true
+    let pieces = [];
+    if (hasPieces) {
+        pieces = Array.from(document.querySelectorAll('.piece-container')).map((pieceContainer, index) => ({
+            pieceNum: index + 1,  // Set piece number (1-based index)
+            pieceDescription: pieceContainer.querySelector(`input[name="piece_description_${index}"]`).value,
+            length: parseFloat(pieceContainer.querySelector(`input[name="piece_length_${index}"]`).value),
+            width: parseFloat(pieceContainer.querySelector(`input[name="piece_width_${index}"]`).value),
+            height: parseFloat(pieceContainer.querySelector(`input[name="piece_height_${index}"]`).value),
+            roomNum: pieceContainer.querySelector(`input[name="piece_room_${index}"]`).value,
+            shelfNum: pieceContainer.querySelector(`input[name="piece_shelf_${index}"]`).value,
+            pNotes: pieceContainer.querySelector(`textarea[name="piece_notes_${index}"]`).value,
+        }));
     }
+
+    // Prepare image as Base64
+    let itemImage = null;
+    const fileInput = document.getElementById('itemImage');
+    if (fileInput.files[0]) {
+        itemImage = await toBase64(fileInput.files[0]);
+    }
+
+    // Construct DonationRequest JSON
+    const donationRequest = {
+        donorName,
+        donateDate,
+        itemDescription,
+        color,
+        material,
+        mainCategory,
+        subCategory,
+        isNew,
+        hasPieces,
+        pieces,
+        itemImage,
+    };
 
     try {
         const response = await fetch(API_ENDPOINTS.SUBMIT_DONATION, {
             method: 'POST',
-            body: formData
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(donationRequest),
         });
 
         if (response.ok) {
-            alert('Donation recorded successfully');
-            window.location.href = 'dashboard.html';
+            alert('Donation recorded successfully!');
         } else {
-            alert('Failed to record donation');
+            alert('Failed to record donation.');
         }
     } catch (error) {
-        alert('Error recording donation');
-        console.error(error);
+        console.error('Error submitting donation:', error);
+        alert('Error submitting donation');
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await Promise.all([
-        loadStaffName(),
-        loadCategories()
-    ]);
-    togglePiecesSection();
+document.addEventListener('DOMContentLoaded', function () {
+    loadStaffName();
+    loadCategories();  // Populate categories on page load
 });
+
+// Helper function to convert file to Base64
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]); // Exclude the prefix
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
