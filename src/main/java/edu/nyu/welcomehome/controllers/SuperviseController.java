@@ -23,15 +23,23 @@ public class SuperviseController {
         this.superviseService = superviseService;
     }
 
-    // Endpoint to fetch orders for a supervisor
     @GetMapping("/orders/{username}")
     public ResponseEntity<?> getOrders(@PathVariable String username) {
         try {
-            logger.info("Fetching orders for supervisor: " + username);
-            Map<String, Object> response = superviseService.getOrderDetails(username);
+            logger.info("Fetching orders for user: " + username);
+
+            // First, check if the user is a manager
+            boolean isManager = superviseService.isUserManager(username);
+            Map<String, Object> response;
+
+            if (isManager) {
+                response = superviseService.getAllInProgressOrders();
+            } else {
+                response = superviseService.getOrderDetails(username);
+            }
 
             if (response.isEmpty() || ((List<?>) response.get("orders")).isEmpty()) {
-                logger.info("No orders found for supervisor: " + username);
+                logger.info("No orders found for user: " + username);
                 return ResponseEntity.ok()
                         .body(Map.of(
                                 "orders", List.of(),
@@ -54,7 +62,7 @@ public class SuperviseController {
             Long orderId = Long.valueOf(request.get("orderID").toString());
             String date = (String) request.get("date");
 
-            logger.info("Updating status for order " + orderId + " by supervisor " + username);
+            logger.info("Updating status for order " + orderId + " by user " + username);
 
             Delivered delivered = new Delivered();
             delivered.setUserName(username);
@@ -62,7 +70,6 @@ public class SuperviseController {
             delivered.setDeliveredStatus("IN_TRANSIT");
             delivered.setDate(date);
 
-            // Call service to update delivery status
             boolean updated = superviseService.updateDeliveryStatus(delivered);
 
             if (!updated) {
