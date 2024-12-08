@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -20,13 +21,10 @@ public class OrderController {
     }
 
     @GetMapping("/orderhistory")
-    public String getOrderHistory(HttpSession session, Model model) {
-        // Retrieve the username from the session
-        String username = (String) session.getAttribute("username");
-        //System.out.println(username);
+    public String getOrderHistory(Model model,
+                                  @RequestParam(required = false) String username) {
         List<Map<String, Object>> orders = orderHistoryService.getOrders(username);
         System.out.println("Orders fetched: " + orders);
-
 
         // Fetch the orders using the username
         model.addAttribute("orders", orders);

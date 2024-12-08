@@ -1,0 +1,133 @@
+:root {
+    --primary-color: #2f2f2f;
+    --background-color: #e3d4c3;
+    --secondary-color: #c5b5a4;
+    --white: #ffffff;
+    --shadow: 0 2px 4px rgba(47, 47, 47, 0.1);
+    --spacing: 20px;
+    --border-radius: 8px;
+}
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styles */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-left {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-left {
+    font-size: 22px;
+    font-weight: bold;
+    display:flex;
+    justify-content: right;
+}
+
+/* Header Section */
+.header {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing);
+    text-align: center;
+    margin-bottom: var(--spacing);
+}
+
+.buttons {
+    margin-top: 10px;
+}
+
+.btn {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #b3a090;
+}
+
+/* Order History Section */
+.order-history {
+    background-color: var(--white);
+    padding: var(--spacing);
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing);
+    box-shadow: var(--shadow);
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5em;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+.status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    color: var(--white);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .order-history {
+        padding: 15px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
