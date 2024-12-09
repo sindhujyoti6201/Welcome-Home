@@ -59,8 +59,8 @@ public class ItemService {
         List<Object> params = new ArrayList<>();
 
         if (itemId != null && !itemId.trim().isEmpty()) {
-            queryBuilder.append(" AND itemID LIKE ?");
-            params.add("%" + itemId + "%");
+            queryBuilder.append(" AND itemID = ?");
+            params.add(itemId);
         }
 
         if (mainCategory != null && !mainCategory.trim().isEmpty()) {
@@ -114,12 +114,4 @@ public class ItemService {
             return false; // Return false if there's any failure
         }
     }
-
-
-
-    // Retrieve cart items for a specific user
-//    public List<Map<String, Object>> getCartItems(String username) {
-//        String query = "SELECT i.* FROM item i INNER JOIN cart c ON i.itemID = c.itemID WHERE c.userName = ?";
-//        return jdbcTemplate.queryForList(query, username);
-//    }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/customer")
@@ -26,7 +27,7 @@ public class ItemController {
                                    @RequestParam(required = false) String mainCategory,
                                    @RequestParam(required = false) String subCategory,
                                    @RequestParam(required = false) String username) {
-        // Fetch main categories
+         //Fetch main categories
         model.addAttribute("mainCategories", itemService.getMainCategories());
 
         // Fetch subcategories if main category is selected
@@ -42,7 +43,7 @@ public class ItemController {
         model.addAttribute("username", username);
 
         return "customer"; // Return the customer view
-    }
+        }
 
 
     @PostMapping("/addToCart")
@@ -50,6 +51,18 @@ public class ItemController {
     public String addToCart(@RequestParam String username, @RequestParam String itemId) {
         boolean added = itemService.addItemToCart(username, itemId);
         return added ? "Item added to cart successfully!" : "Failed to add item to cart.";
+    }
+
+    @GetMapping("/api/categories")
+    @ResponseBody
+    public Set<String> getCategories() {
+        return itemService.getMainCategories();
+    }
+
+    @GetMapping("/api/subcategories/{mainCategory}")
+    @ResponseBody
+    public Set<String> getSubcategories(@PathVariable String mainCategory) {
+        return itemService.getSubcategoriesByMainCategory(mainCategory);
     }
 
 }
