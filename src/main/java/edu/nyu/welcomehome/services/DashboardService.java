@@ -1,6 +1,6 @@
 package edu.nyu.welcomehome.services;
 
-import edu.nyu.welcomehome.models.request.DashboardAccessDTO;
+import edu.nyu.welcomehome.daos.DashboardAccessDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
