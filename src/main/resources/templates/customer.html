@@ -43,8 +43,9 @@
 
 <div class="product-container">
     <div th:each="item : ${items}" class="product-item">
-        <img th:if="${item.photo != null}"
-             th:src="'data:image/jpeg;base64,' + ${#strings.replace(item.photo, '\n', '')}"
+        <!-- Fetching the image from the backend using itemID -->
+        <img th:if="${item.photo != null and item.photo != ''}"
+             th:src="@{'/api/images/' + ${item.itemID}}"
              alt="Product Image"/>
 
         <h3>Item ID: <span th:text="${item.itemID}"></span></h3>
@@ -68,6 +69,5 @@
     </div>
 </div>
 <script src="/js/customer.js"></script>
-
 </body>
 </html>

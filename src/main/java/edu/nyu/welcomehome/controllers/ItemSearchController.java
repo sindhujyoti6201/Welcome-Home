@@ -30,6 +30,8 @@ public class ItemSearchController {
             } catch (Exception e) {
                 model.addAttribute("error", "Error fetching data. Please check the Item ID.");
             }
+        } else {
+            model.addAttribute("error", "Invalid itemID. Please enter a value greater than or equal to 1.");
         }
         else {
             model.addAttribute("error", "Invalid itemID. Please enter a value greater than or equal to 1.");

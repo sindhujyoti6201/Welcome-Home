@@ -1,6 +1,6 @@
 package edu.nyu.welcomehome.controllers;
 
-import edu.nyu.welcomehome.services.MiscService;
+import edu.nyu.welcomehome.services.ItemImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,22 +10,24 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MiscController {
-    private static final Logger logger = LoggerFactory.getLogger(MiscController.class);
+@RequestMapping("/api")
+public class ItemImageController {
+    private static final Logger logger = LoggerFactory.getLogger(ItemImageController.class);
 
-    private final MiscService miscService;
+    private final ItemImageService itemImageService;
 
     @Autowired
-    MiscController(MiscService miscService) {
-        this.miscService = miscService;
+    ItemImageController(ItemImageService itemImageService) {
+        this.itemImageService = itemImageService;
     }
 
     @GetMapping(value = "/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getImage(@PathVariable int id) {
-        byte[] imageData = miscService.getImageById(id);
+        byte[] imageData = itemImageService.getImageById(id);
         System.out.println("Image data size: " + (imageData != null ? imageData.length : 0));
 
         if (imageData == null || imageData.length == 0) {

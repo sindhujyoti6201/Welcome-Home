@@ -1,6 +1,6 @@
 package edu.nyu.welcomehome.services;
 
-import edu.nyu.welcomehome.models.Delivered;
+import edu.nyu.welcomehome.daos.Delivered;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -104,7 +104,7 @@ public class SuperviseService {
     public boolean updateDeliveryStatus(Delivered delivered) {
         try {
             // Check delivery status
-            Map<String, String> checkParams = Collections.singletonMap("orderID", String.valueOf(delivered.getOrderID()));
+            Map<String, String> checkParams = Collections.singletonMap("orderID", String.valueOf(delivered.orderID()));
             String checkSql = loadSqlFromFile("sql/supervise/check-delivery-status.sql", checkParams);
 
             String currentStatus = null;
@@ -117,22 +117,22 @@ public class SuperviseService {
             }
 
             if (currentStatus != null && !"NOT YET DELIVERED".equals(currentStatus)) {
-                logger.warning("Order " + delivered.getOrderID() + " is not in 'NOT YET DELIVERED' status.");
+                logger.warning("Order " + delivered.orderID() + " is not in 'NOT YET DELIVERED' status.");
                 return false;
             }
 
             // Update delivery status
             Map<String, String> updateParams = new HashMap<>();
-            updateParams.put("userName", delivered.getUserName());
-            updateParams.put("orderID", String.valueOf(delivered.getOrderID()));
-            updateParams.put("date", delivered.getDate());
+            updateParams.put("userName", delivered.userName());
+            updateParams.put("orderID", String.valueOf(delivered.orderID()));
+            updateParams.put("date", delivered.date());
 
             String updateSql = loadSqlFromFile("sql/supervise/update-delivery-status.sql", updateParams);
 
             try (Connection conn = jdbcTemplate.getDataSource().getConnection();
                  PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                 int rowsAffected = stmt.executeUpdate();
-                logger.info("Updated " + rowsAffected + " rows for order " + delivered.getOrderID());
+                logger.info("Updated " + rowsAffected + " rows for order " + delivered.orderID());
                 return rowsAffected > 0;
             }
 

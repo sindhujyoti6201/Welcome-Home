@@ -1,0 +1,1 @@
+SELECT photo FROM Item WHERE itemID = {itemID}

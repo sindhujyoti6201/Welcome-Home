@@ -1,6 +1,6 @@
 package edu.nyu.welcomehome.controllers;
 
-import edu.nyu.welcomehome.models.Delivered;
+import edu.nyu.welcomehome.daos.Delivered;
 import edu.nyu.welcomehome.services.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,11 +64,7 @@ public class SuperviseController {
 
             logger.info("Updating status for order " + orderId + " by user " + username);
 
-            Delivered delivered = new Delivered();
-            delivered.setUserName(username);
-            delivered.setOrderID(orderId);
-            delivered.setDeliveredStatus("IN_TRANSIT");
-            delivered.setDate(date);
+            Delivered delivered = new Delivered(username, orderId, "IN_TRANSIT", date);
 
             boolean updated = superviseService.updateDeliveryStatus(delivered);
 

@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class ItemService {
+    private static final Logger logger = Logger.getLogger(ItemService.class.getName());
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -70,7 +73,20 @@ public class ItemService {
             params.add(subCategory);
         }
 
-        return jdbcTemplate.queryForList(queryBuilder.toString(), params.toArray());
+        List<Map<String, Object>> rawResults = jdbcTemplate.queryForList(queryBuilder.toString(), params.toArray());
+
+        // Convert image BLOBs to Base64 strings
+        for (Map<String, Object> result : rawResults) {
+            byte[] photoBlob = (byte[]) result.get("photo");
+            if (photoBlob != null) {
+                String photoBase64 = Base64.getEncoder().encodeToString(photoBlob);
+                result.put("photo", photoBase64);
+
+                logger.info("Sending image for itemID: " + result.get("itemID") + " with Base64 size: " + photoBase64.length());
+            }
+        }
+
+        return rawResults;
     }
 
     public boolean addItemToCart(String username, String itemId, String orderNotes) {

@@ -27,7 +27,6 @@ public class SearchOrderController {
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchOrderResponse>> searchOrders(@RequestParam(required = false) String username,
                                                                   @RequestParam(required = false) String orderId) {
-        System.out.println("Received parameters - username: " + username + ", orderId: " + orderId);
         try {
             List<SearchOrderResponse> response = searchOrderService.searchOrders(username, orderId);
             return ResponseEntity.ok(response);

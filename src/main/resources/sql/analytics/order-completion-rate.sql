@@ -1,0 +1,1 @@
+SELECT (CAST(SUM(CASE WHEN deliveredStatus = 'DELIVERED' THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100 FROM Delivered
