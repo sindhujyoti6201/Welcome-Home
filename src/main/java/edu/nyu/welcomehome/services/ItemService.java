@@ -73,11 +73,11 @@ public class ItemService {
         return jdbcTemplate.queryForList(queryBuilder.toString(), params.toArray());
     }
 
-    public boolean addItemToCart(String username, String itemId) {
+    public boolean addItemToCart(String username, String itemId, String orderNotes) {
         try {
             // Step 1: Create a new order in the 'Ordered' table with status 'INITIATED'
-            String createOrderQuery = "INSERT INTO Ordered (client, orderStatus, orderDate) VALUES (?, 'INITIATED', NOW())";
-            jdbcTemplate.update(createOrderQuery, username);
+            String createOrderQuery = "INSERT INTO Ordered (client, orderNotes, orderStatus, orderDate) VALUES (?,?, 'INITIATED', NOW())";
+            jdbcTemplate.update(createOrderQuery, username, orderNotes);
             //System.out.println("Order created for user: " + username);
 
 
