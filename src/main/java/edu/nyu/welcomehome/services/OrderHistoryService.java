@@ -25,11 +25,11 @@ public class OrderHistoryService {
         String query = """
             SELECT o.orderID,
                     o.orderDate,
-                    d.deliveredStatus,
-                    d.date AS deliveryDate,
-                    i.iDescription AS itemDescription
+                    o.orderStatus,
+                    i.iDescription AS itemDescription,
+                    i.mainCategory AS itemMainCategory,
+                    i.subCategory AS itemSubCategory
             FROM Ordered o
-            INNER JOIN Delivered d ON o.orderID = d.orderID
             INNER JOIN ItemIn ii ON o.orderID = ii.orderID
             INNER JOIN Item i ON ii.ItemID = i.ItemID
             WHERE o.client = ?""";  // Parameterized query with `?`
