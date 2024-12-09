@@ -89,11 +89,11 @@ public class ItemService {
         return rawResults;
     }
 
-    public boolean addItemToCart(String username, String itemId, String orderNotes) {
+    public boolean addItemToCart(String username, String itemId) {
         try {
             // Step 1: Create a new order in the 'Ordered' table with status 'INITIATED'
-            String createOrderQuery = "INSERT INTO Ordered (client, orderNotes, orderStatus, orderDate) VALUES (?,?, 'INITIATED', NOW())";
-            jdbcTemplate.update(createOrderQuery, username, orderNotes);
+            String createOrderQuery = "INSERT INTO Ordered (client, orderStatus, orderDate) VALUES (?, 'INITIATED', NOW())";
+            jdbcTemplate.update(createOrderQuery, username);
             //System.out.println("Order created for user: " + username);
 
 

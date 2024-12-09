@@ -58,12 +58,9 @@
             <li>Category: <span th:text="${item.mainCategory}"></span></li>
             <li>Subcategory: <span th:text="${item.subCategory}"></span></li>
         </ul>
-        <label>Order Notes:</label>
-        <input type="text" th:id="'orderNote-' + ${item.itemID}" class="order-note" placeholder="Add your note for this item"  />
-
                 <button class="add-to-cart"
                         th:attr="data-item-id=${item.itemID},
-                             onclick=|addToCart(document.getElementById('userName').textContent, this.getAttribute('data-item-id'), document.getElementById('orderNote-${item.itemID}').value)|">
+                            onclick=|addToCart(document.getElementById('userName').textContent, this.getAttribute('data-item-id'))|">
                     Add to Order
                 </button>
     </div>
