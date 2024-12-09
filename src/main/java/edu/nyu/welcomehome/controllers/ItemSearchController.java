@@ -23,13 +23,15 @@ public class ItemSearchController {
      */
     @GetMapping("/itemsearch")
     public String searchItem(@RequestParam(required = false) Integer itemID, Model model) {
-        if (itemID != null) {
+        if (itemID != null && itemID > 0) {
             try {
                 List<Piece> pieces = itemSearchService.getItemPieces(itemID); // Get list of Piece objects
                 model.addAttribute("pieces", pieces); // Add the pieces list to the model
             } catch (Exception e) {
                 model.addAttribute("error", "Error fetching data. Please check the Item ID.");
             }
+        } else {
+            model.addAttribute("error", "Invalid itemID. Please enter a value greater than or equal to 1.");
         }
         return "itemsearch"; // This should match your HTML page name
     }

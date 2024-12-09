@@ -1,8 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Set current year in footer
     $('#year').text(new Date().getFullYear());
 
-    $('#searchButton').click(function() {
+    $('#searchButton').click(function () {
         var clientName = $('#clientName').val().trim();
         var orderId = $('#orderId').val().trim();
 
@@ -27,7 +27,7 @@ $(document).ready(function() {
             type: 'GET',  // Method GET for fetching data
             contentType: 'application/json',  // Set the content type to application/json
             dataType: 'json',  // Specify the data type expected in the response
-            success: function(data) {
+            success: function (data) {
                 if (data.length === 0) {
                     if (clientName) {
                         $('#results').html('<p class="text-warning">No orders placed by the username "' + clientName + '"</p>');
@@ -37,7 +37,7 @@ $(document).ready(function() {
                 } else {
                     // If orders are found, display the order details
                     var resultHtml = '<h4>Order Results:</h4><ul class="list-group">';
-                    data.forEach(function(order) {
+                    data.forEach(function (order) {
                         resultHtml += '<li class="list-group-item">';
                         resultHtml += 'Order ID: ' + order.orderId + '<br>';
                         resultHtml += 'Order Date: ' + order.orderDate + '<br>';
@@ -52,8 +52,8 @@ $(document).ready(function() {
 
                         if (order.hasPieces && order.pieceNum && order.pieceNum.length > 0) {
                             resultHtml += '<h5>Pieces:</h5><ul>';
-                            order.pieceNum.forEach(function(piece) {
-                                resultHtml += '<li>Piece Number: ' + piece.pieceNum + ' - ' + piece.pieceDescription + '</li>';
+                            order.pieceNum.forEach(function (piece) {
+                                resultHtml += '<li>Piece Number: ' + piece.pieceNum + ' - ' + piece.pieceDescription + ' stored at roomNum: ' + piece.roomNum + ' and shelfNum: ' + piece.shelfNum + '</li>';
                             });
                             resultHtml += '</ul>';
                         }
@@ -64,7 +64,7 @@ $(document).ready(function() {
                     $('#results').html(resultHtml);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error(error);  // Log the error to the console for debugging
                 $('#results').html('<p class="text-danger">Error occurred while searching for orders. Please try again.</p>');
             }

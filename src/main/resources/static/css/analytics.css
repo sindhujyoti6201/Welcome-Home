@@ -53,8 +53,10 @@ nav {
 
 .analytics-summary {
     display: flex;
-    justify-content: space-around;
-    padding: 20px 0;
+    flex-wrap: wrap; /* Allow wrapping of cards on smaller screens */
+    justify-content: space-between;
+    gap: 30px;
+    padding: 20px 80px;
 }
 
 .stat-card {
@@ -62,12 +64,26 @@ nav {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 30%;
+    flex: 1 1 9%; /* Increase width of cards (around 32%) */
     text-align: center;
+    min-width: 180px; /* Ensure cards don't become too narrow */
+    margin: 10px; /* Add margin between cards */
+    height: 100px; /* Reduce the height of the card */
+}
+
+/* Make <p> more visible and dominant */
+.stat-card p {
+    font-size: 1.6rem; /* Increase font size for better visibility */
+    font-weight: bold; /* Make text bold */
+    color: #fff; /* Set text color to white for contrast */
+    padding: 15px; /* Add padding to create space around the text */
+    border-radius: 8px; /* Round the corners for a smoother look */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    margin-top: 10px; /* Add some space between the heading and the text */
 }
 
 .stat-card h3 {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     margin-bottom: 10px;
 }
 
@@ -117,14 +133,16 @@ footer #year {
 
     .analytics-summary {
         flex-direction: column;
+        align-items: center; /* Center align the stat cards */
     }
 
     .stat-card {
-        width: 80%;
+        width: 80%; /* Cards take up more width on smaller screens */
         margin-bottom: 20px;
+        height: 150px; /* Reduced height on smaller screens */
     }
 
     .volunteer-impact, .processing-time {
-        width: 90%;
+        width: 90%; /* Slightly wider on small screens */
     }
 }

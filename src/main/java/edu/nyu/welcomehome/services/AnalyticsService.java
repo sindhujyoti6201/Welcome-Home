@@ -7,25 +7,30 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import static edu.nyu.welcomehome.utils.SqlFileLoader.loadSqlFromFile;
 
 @Service
 public class AnalyticsService {
+    private static final Logger logger = Logger.getLogger(AnalyticsService.class.getName());
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public int getTotalClientsServed() {
-        return jdbcTemplate.queryForObject(
-                "SELECT COUNT(DISTINCT client) FROM Ordered",
-                Integer.class
-        );
+    public Integer getTotalClientsServed() {
+        String sql = loadSqlFromFile("sql/analytics/total-clients-served.sql", Collections.emptyMap());
+        logger.info("The parsed query for getting total clients served: "+sql);
+
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     public List<DonatedItemCategoryResponse> getItemCategoryDonations() {
-        String sql = "SELECT i.mainCategory, i.subCategory, COUNT(*) as itemCount " +
-                "FROM Item i JOIN Category c ON i.mainCategory = c.mainCategory AND i.subCategory = c.subCategory " +
-                "GROUP BY i.mainCategory, i.subCategory";
+        String sql = loadSqlFromFile("sql/analytics/item-category-donations.sql", Collections.emptyMap());
+        logger.info("The parsed query for getting item category donations: " + sql);
 
         // Define the RowMapper for mapping the result set to DonatedItemCategoryResponse
         RowMapper<DonatedItemCategoryResponse> rowMapper = (rs, rowNum) ->
@@ -39,29 +44,24 @@ public class AnalyticsService {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public int getTotalItemsDonated() {
-        return jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM Item",
-                Integer.class
-        );
+    public Integer getTotalItemsDonated() {
+        String sql = loadSqlFromFile("sql/analytics/total-items-donated.sql", Collections.emptyMap());
+        logger.info("The parsed query for getting total items donated: " + sql);
+
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
-    public double getOrderCompletionRate() {
-        return jdbcTemplate.queryForObject(
-                "SELECT " +
-                        "(CAST(SUM(CASE WHEN deliveredStatus = 'DELIVERED' THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100 " +
-                        "FROM Delivered",
-                Double.class
-        );
+    public Double getOrderCompletionRate() {
+        String sql = loadSqlFromFile("sql/analytics/order-completion-rate.sql", Collections.emptyMap());
+        logger.info("The parsed query for getting order completion rate: " + sql);
+
+        return jdbcTemplate.queryForObject(sql, Double.class);
     }
 
     public List<DonatedItemCategoryResponse> getTopDonatedCategories(int topN) {
-        // SQL Query to get the top N donated categories based on item count
-        String sql = "SELECT i.mainCategory, COUNT(*) as itemCount " +
-                "FROM Item i " +
-                "GROUP BY i.mainCategory " +
-                "ORDER BY itemCount DESC " +
-                "LIMIT ?";
+        Map<String, String> params = Collections.singletonMap("topN", String.valueOf(topN));
+        String sql = loadSqlFromFile("sql/analytics/top-donated-categories.sql", params);
+        logger.info("The parsed query for getting top donated categories: " + sql);
 
         // RowMapper to map the result set to DonatedItemCategoryResponse
         RowMapper<DonatedItemCategoryResponse> rowMapper = (rs, rowNum) ->
@@ -71,24 +71,20 @@ public class AnalyticsService {
                         .build();
 
         // Query the database using the RowMapper and passing the topN parameter for LIMIT
-        return jdbcTemplate.query(sql, rowMapper, topN);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Map<String, Object> getVolunteerContributions() {
-        return jdbcTemplate.queryForList(
-                "SELECT " +
-                        "COUNT(DISTINCT userName) as totalVolunteers, " +
-                        "COUNT(DISTINCT ItemID) as itemsContributed " +
-                        "FROM DonatedBy"
-        ).get(0);
+        String sql = loadSqlFromFile("sql/analytics/volunteer-contributions.sql", Collections.emptyMap());
+        logger.info("The parsed query for getting volunteer contributions: " + sql);
+
+        return jdbcTemplate.queryForList(sql).get(0);
     }
 
     public Map<String, Object> getAverageProcessingTime() {
-        return jdbcTemplate.queryForList(
-                "SELECT " +
-                        "AVG(DATEDIFF(Delivered.date, Ordered.orderDate)) as avgProcessingDays " +
-                        "FROM Ordered " +
-                        "JOIN Delivered ON Ordered.orderID = Delivered.orderID"
-        ).get(0);
+        String sql = loadSqlFromFile("sql/analytics/average-processing-time.sql", Collections.emptyMap());
+        logger.info("The parsed query for getting average processing time: " + sql);
+
+        return jdbcTemplate.queryForList(sql).get(0);
     }
 }

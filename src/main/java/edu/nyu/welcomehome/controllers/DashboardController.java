@@ -1,6 +1,6 @@
 package edu.nyu.welcomehome.controllers;
 
-import edu.nyu.welcomehome.models.request.DashboardAccessDTO;
+import edu.nyu.welcomehome.daos.DashboardAccessDTO;
 import edu.nyu.welcomehome.services.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,9 +28,9 @@ public class DashboardController {
     public ResponseEntity<?> getDashboardAccess(@PathVariable String username) {
         try {
             DashboardAccessDTO access = dashboardService.getDashboardAccess(username);
-            logger.info("Roles for " + username + ": " + access.getRoles());
+            logger.info("Roles for " + username + ": " + access.roles());
 
-            if (access.getRoles().isEmpty()) {
+            if (access.roles().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Map.of("error", "Access denied. No valid roles assigned."));
             }
