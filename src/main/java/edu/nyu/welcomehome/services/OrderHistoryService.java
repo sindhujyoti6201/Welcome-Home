@@ -23,9 +23,24 @@ public class OrderHistoryService {
      * Fetches all orders for the given username and returns the result as a list.
      */
     public List<Map<String, Object>> getOrders(String username) {
+
+        String query = """
+            SELECT o.orderID,
+                    o.orderDate,
+                    o.orderStatus,
+                    i.iDescription AS itemDescription,
+                    i.mainCategory AS itemMainCategory,
+                    i.subCategory AS itemSubCategory
+            FROM Ordered o
+            INNER JOIN ItemIn ii ON o.orderID = ii.orderID
+            INNER JOIN Item i ON ii.ItemID = i.ItemID
+            WHERE o.client = ?""";  // Parameterized query with `?`
+
+        return jdbcTemplate.queryForList(query, username);  // Pass username parameter
         Map<String, String> params = Collections.singletonMap("username", username);
         String query = loadSqlFromFile("sql/orderhistory.sql", params);
         logger.info("The query parsed for getting order history is: " + query);
         return jdbcTemplate.queryForList(query);  // Pass username parameter
+
     }
 }

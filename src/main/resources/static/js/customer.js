@@ -22,6 +22,37 @@ async function fetchCustomerData() {
         return;
     }
     try {
+
+    const response = await fetch(`/api/customer/${username}`);
+    const data = await response.json();
+
+    if (response.ok) {
+    console.log('Customer Data:', data);
+    // Handle data as needed
+} else {
+    console.error('Failed to fetch customer data:', data);
+    alert("Error fetching customer data.");
+}
+}
+    catch (error) {
+    console.error('Error during fetch:', error);
+    alert("Unable to fetch customer data.");
+}
+}
+
+    async function addToCart(username, itemId , orderNotes) {
+    try {
+        const orderNotes = document.getElementById(`orderNote-${itemId}`).value;
+        console.log(orderNotes);
+    const parsedItemId = parseInt(itemId, 10);
+
+    // Sending request to add the item to the order
+    const response = await fetch('/customer/addToCart', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ username, itemId: parsedItemId ,orderNotes})
+});
+
         const response = await fetch(`/api/customer/${username}`);
         const data = await response.json();
 
@@ -48,6 +79,7 @@ async function addToCart(username, itemId) {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: new URLSearchParams({username, itemId: parsedItemId})
         });
+
 
         const message = await response.text();
         alert(message);

@@ -33,6 +33,9 @@ public class ItemSearchController {
         } else {
             model.addAttribute("error", "Invalid itemID. Please enter a value greater than or equal to 1.");
         }
+        else {
+            model.addAttribute("error", "Invalid itemID. Please enter a value greater than or equal to 1.");
+        }
         return "itemsearch"; // This should match your HTML page name
     }
 }
