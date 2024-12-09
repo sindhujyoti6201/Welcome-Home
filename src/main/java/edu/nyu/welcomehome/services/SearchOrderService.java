@@ -86,6 +86,8 @@ public class SearchOrderService {
                 ImmutablePieceResponse.builder()
                         .pieceNum(rs.getInt("pieceNum"))
                         .pieceDescription(rs.getString("pDescription"))
+                        .roomNum(rs.getInt("roomNum"))
+                        .shelfNum(rs.getInt("shelfNum"))
                         .build();
 
         return jdbcTemplate.query(query, rowMapper);
