@@ -33,9 +33,10 @@
             <tr>
                 <th>Order ID</th>
                 <th>Product Description</th>
+                <th>Category</th>
+                <th>Subcategory</th>
                 <th>Status</th>
                 <th>Order Date</th>
-                <th>Delivered Date</th>
             </tr>
             </thead>
             <tbody>
@@ -43,9 +44,10 @@
             <tr th:each="order : ${orders}">
                 <td th:text="${order['orderID']}"></td>
                 <td th:text="${order['itemDescription']}"></td>
-                <td th:text="${order['deliveredStatus']}"></td>
+                <td th:text="${order['itemMainCategory']}"></td>
+                <td th:text="${order['itemSubCategory']}"></td>
+                <td th:text="${order['orderStatus']}"></td>
                 <td th:text="${order['orderDate']}"></td>
-                <td th:text="${order['deliveryDate']}"></td>
             </tr>
             </tbody>
         </table>
