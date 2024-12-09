@@ -189,32 +189,3 @@ nav {
         width: 100%;
     }
 }
-
-/* Style the Order Notes label */
-.product-item label {
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 8px;
-    display: block;
-    color: var(--color-primary);
-}
-
-/* Style the Order Notes input box */
-.product-item .order-note {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid var(--color-secondary);
-    border-radius: 4px;
-    margin-bottom: 15px;
-    background-color: var(--color-white);
-    color: var(--color-primary);
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.product-item .order-note:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
-
