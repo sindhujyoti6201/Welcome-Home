@@ -1,29 +1,28 @@
+document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
 
-    document.getElementById('userName').textContent = sessionStorage.getItem('username') || 'Guest';
+let selectedOrderId = null;
+let selectedAction = null;
+let allOrders = [];
 
-    let selectedOrderId = null;
-    let selectedAction = null;
-    let allOrders = [];
-
-    async function loadOrders() {
+async function loadOrders() {
     const username = sessionStorage.getItem('username');
     try {
-    const response = await fetch(`/api/manager/orders/${username}`);
-    if (!response.ok) {
-    throw new Error('Failed to load orders');
+        const response = await fetch(`/api/manager/orders/${username}`);
+        if (!response.ok) {
+            throw new Error('Failed to load orders');
+        }
+
+        const data = await response.json();
+        allOrders = data.orders || [];
+        filterOrders('INITIATED');
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('ordersList').innerHTML =
+            `<div class="order-card">Error loading orders: ${error.message}</div>`;
+    }
 }
 
-    const data = await response.json();
-    allOrders = data.orders || [];
-    filterOrders('INITIATED');
-} catch (error) {
-    console.error('Error:', error);
-    document.getElementById('ordersList').innerHTML =
-    `<div class="order-card">Error loading orders: ${error.message}</div>`;
-}
-}
-
-    function filterOrders(status) {
+function filterOrders(status) {
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.toggle('active', btn.textContent.includes(status.replace('_', ' ')));
     });
@@ -32,22 +31,22 @@
     displayOrders(filteredOrders, status);
 }
 
-    function displayOrders(orders, currentStatus) {
+function displayOrders(orders, currentStatus) {
     const ordersList = document.getElementById('ordersList');
 
     if (orders.length === 0) {
-    ordersList.innerHTML = `<div class="order-card">No ${currentStatus.toLowerCase()} orders found</div>`;
-    return;
-}
+        ordersList.innerHTML = `<div class="order-card">No ${currentStatus.toLowerCase()} orders found</div>`;
+        return;
+    }
 
     ordersList.innerHTML = orders.map(order => {
-    const formattedDate = new Date(order.orderDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-});
+        const formattedDate = new Date(order.orderDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
 
-    return `
+        return `
                     <div class="order-card">
                         <div class="order-header">
                             <div>
@@ -91,19 +90,19 @@
                         </div>
                     </div>
                 `;
-}).join('');
+    }).join('');
 }
 
-    function showStartConfirmation(orderId) {
+function showStartConfirmation(orderId) {
     selectedOrderId = orderId;
     selectedAction = 'start';
     document.getElementById('modalTitle').textContent = 'Start Order';
     document.getElementById('modalMessage').textContent =
-    'This will assign a supervisor and delivery agent to the order. Continue?';
+        'This will assign a supervisor and delivery agent to the order. Continue?';
     showModal();
 }
 
-    function showCancelConfirmation(orderId) {
+function showCancelConfirmation(orderId) {
     selectedOrderId = orderId;
     selectedAction = 'cancel';
     document.getElementById('modalTitle').textContent = 'Cancel Order';
@@ -111,61 +110,67 @@
     showModal();
 }
 
-    function showModal() {
+function showModal() {
     document.getElementById('modalOverlay').style.display = 'block';
     document.getElementById('confirmationModal').style.display = 'block';
 }
 
-    function closeModal() {
+function closeModal() {
     document.getElementById('modalOverlay').style.display = 'none';
     document.getElementById('confirmationModal').style.display = 'none';
     selectedOrderId = null;
     selectedAction = null;
 }
 
-    document.getElementById('confirmButton').addEventListener('click', async () => {
+document.getElementById('confirmButton').addEventListener('click', async () => {
     if (selectedOrderId && selectedAction) {
-    await updateOrderStatus(selectedOrderId, selectedAction);
-    closeModal();
-}
+        await updateOrderStatus(selectedOrderId, selectedAction);
+        closeModal();
+    }
 });
 
-    async function updateOrderStatus(orderId, action) {
+async function updateOrderStatus(orderId, action) {
     try {
-    const response = await fetch('/api/manager/update-order', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json'
-},
-    body: JSON.stringify({
-    orderID: orderId,
-    action: action
-})
-});
+        const response = await fetch('/api/manager/update-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderID: orderId,
+                action: action
+            })
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-    throw new Error(data.error || 'Failed to update order');
-}
-
-    await loadOrders();
-
-        if (action === 'start') {
-            alert(`Order started successfully!\nAssigned Supervisor: ${data.supervisor}\nDelivery Agent: ${data.deliveryAgent}`);
-        } else {
-            alert('Order cancelled successfully!');
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to update order');
         }
 
-} catch (error) {
-    console.error('Error:', error);
-    alert(error.message);
-}
+        if (data.error && data.error.includes("staff members")) {
+            alert("Orders from staff members cannot be processed. Order will be canceled.");
+            allOrders = allOrders.filter(order => order.orderID !== orderId); // Remove order from list
+            filterOrders('INITIATED'); // Refresh the displayed orders
+        } else {
+            await loadOrders();
+
+            if (action === 'start') {
+                alert(`Order started successfully!\nAssigned Supervisor: ${data.supervisor}\nDelivery Agent: ${data.deliveryAgent}`);
+            } else {
+                alert('Order cancelled successfully!');
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+    }
 }
 
-    function backToDashboard() {
+
+function backToDashboard() {
     window.location.href = '/dashboard';
 }
 
-    // Initial load
-    loadOrders();
+// Initial load
+loadOrders();

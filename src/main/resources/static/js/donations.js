@@ -225,6 +225,12 @@ async function handleSubmit(event) {
 
         if (response.ok) {
             alert('Donation recorded successfully!');
+            setTimeout(() => {
+                var donatedByElement = document.getElementById("donatedBy");
+                var username = donatedByElement.getAttribute("data-username");
+                document.getElementById('staffName').textContent = username || 'Staff';
+                window.location.href = `/donation?username=${username}`;
+            }, 1000); // 1-second delay before redirection
         } else {
             alert('Failed to record donation.');
         }

@@ -1,10 +1,10 @@
-DROP DATABASE IF EXISTS welcomehomedb;
+DROP DATABASE IF EXISTS welcomehometestdb;
 
 -- Create the database
-CREATE DATABASE IF NOT EXISTS welcomehomedb;
+CREATE DATABASE IF NOT EXISTS welcomehometestdb;
 
 -- Switch to the new database
-USE welcomehomedb;
+USE welcomehometestdb;
 
 -- Drop tables if they exist
 DROP TABLE IF EXISTS Delivered;

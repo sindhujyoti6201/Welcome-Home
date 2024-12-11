@@ -27,7 +27,7 @@ public class ItemController {
                                    @RequestParam(required = false) String mainCategory,
                                    @RequestParam(required = false) String subCategory,
                                    @RequestParam(required = false) String username) {
-         //Fetch main categories
+        //Fetch main categories
         model.addAttribute("mainCategories", itemService.getMainCategories());
 
         // Fetch subcategories if main category is selected
@@ -43,13 +43,12 @@ public class ItemController {
         model.addAttribute("username", username);
 
         return "customer"; // Return the customer view
-        }
-
+    }
 
     @PostMapping("/addToCart")
     @ResponseBody
-    public String addToCart(@RequestParam String username, @RequestParam String itemId) {
-        boolean added = itemService.addItemToCart(username, itemId);
+    public String addToCart(@RequestParam String username, @RequestParam String itemId, @RequestParam String orderNotes) {
+        boolean added = itemService.addItemToCart(username, itemId, orderNotes);
         return added ? "Item added to cart successfully!" : "Failed to add item to cart.";
     }
 

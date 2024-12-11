@@ -33,13 +33,13 @@ public class SearchOrderService {
         if (clientName != null && !clientName.isEmpty() && orderId != null && !orderId.isEmpty()) {
             params.put("username", clientName);
             params.put("orderID", orderId);
-            sqlFilePath = "sql/item-search/search-orders-by-orderId-and-username.sql";
+            sqlFilePath = "sql/order-search/search-orders-by-orderId-and-username.sql";
         } else if (clientName != null && !clientName.isEmpty()) {
             params.put("username", clientName);
-            sqlFilePath = "sql/item-search/search-orders-by-username.sql";
+            sqlFilePath = "sql/order-search/search-orders-by-username.sql";
         } else if (orderId != null && !orderId.isEmpty()) {
             params.put("orderID", orderId);
-            sqlFilePath = "sql/item-search/search-orders-by-orderId.sql";
+            sqlFilePath = "sql/order-search/search-orders-by-orderId.sql";
         } else {
             throw new IllegalArgumentException("clientName or orderId is null");
         }
@@ -56,7 +56,6 @@ public class SearchOrderService {
                         .supervisor(rs.getString("supervisor"))
                         .orderedBy(rs.getString("client"))
                         .orderStatus(rs.getString("orderStatus")) // Assuming it's stored as a String in DB
-                        .deliveredBy(rs.getString("username"))
                         .itemId(rs.getInt("itemID"))
                         .iDescription(rs.getString("iDescription"))
                         .hasPieces(rs.getBoolean("hasPieces"))
@@ -79,7 +78,7 @@ public class SearchOrderService {
     private List<PieceResponse> fetchPieces(Integer itemId) {
         Map<String, String> params = Collections.singletonMap("ItemID", String.valueOf(itemId));
 
-        String query = loadSqlFromFile("sql/item-search/fetch-pieces.sql", params);
+        String query = loadSqlFromFile("sql/order-search/fetch-pieces.sql", params);
         logger.info("The query parsed for searching the pieces is: " + query);
 
         RowMapper<PieceResponse> rowMapper = (rs, rowNum) ->
