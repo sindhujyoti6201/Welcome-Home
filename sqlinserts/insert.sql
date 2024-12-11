@@ -1,4 +1,4 @@
-USE welcomehomedb;
+USE welcomehometestdb;
 
 INSERT INTO Category (mainCategory, subCategory, catNotes)
 VALUES
@@ -92,22 +92,35 @@ VALUES
     ('SUPERVISOR', 'Supervises the work of staff, ensuring efficiency and quality control.');
 
 
+-- INSERT INTO Person (userName, password, fname, lname, email)
+-- VALUES
+--     ('Amit Kumar', 'password1', 'Amit', 'Kumar', 'amit@example.com'),
+--     ('David Lee', 'password2', 'David', 'Lee', 'david@example.com'),
+--     ('Emily Johnson', 'password3', 'Emily', 'Johnson', 'emily@example.com'),
+--     ('Harshitha Jonnagaddala', 'password4', 'Harshitha', 'Jonnagaddala', 'harshi@example.com'),
+--     ('John Smith', 'password5', 'John', 'Smith', 'john@example.com'),
+--     ('Michael Williams', 'password6', 'Michael', 'Williams', 'michael@example.com'),
+--     ('Priya Patel', 'password7', 'Priya', 'Patel', 'priya@example.com'),
+--     ('Rahul Mallidi', 'password8', 'Rahul', 'Mallidi', 'rahul@example.com'),
+--     ('Sindhujyothi Dutta', 'password9', 'Sindhujyothi', 'Dutta', 'sindhu@example.com'),
+--     ('Sophia Brown', 'password10', 'Sophia', 'Brown', 'sophia@example.com'),
+--     ('Anjali Reddy', 'password11', 'Anjali', 'Reddy', 'anjali@example.com'),
+--     ('Manoj Kumar', 'password12', 'Manoj', 'Kumar', 'manoj@example.com');
+
 INSERT INTO Person (userName, password, fname, lname, email)
 VALUES
-    ('Amit Kumar', 'password1', 'Amit', 'Kumar', 'amit@example.com'),
-    ('David Lee', 'password2', 'David', 'Lee', 'david@example.com'),
-    ('Emily Johnson', 'password3', 'Emily', 'Johnson', 'emily@example.com'),
-    ('Harshitha Jonnagaddala', 'password4', 'Harshitha', 'Jonnagaddala', 'harshi@example.com'),
-    ('John Smith', 'password5', 'John', 'Smith', 'john@example.com'),
-    ('Michael Williams', 'password6', 'Michael', 'Williams', 'michael@example.com'),
-    ('Priya Patel', 'password7', 'Priya', 'Patel', 'priya@example.com'),
-    ('Rahul Mallidi', 'password8', 'Rahul', 'Mallidi', 'rahul@example.com'),
-    ('Sindhujyothi Dutta', 'password9', 'Sindhujyothi', 'Dutta', 'sindhu@example.com'),
-    ('Sophia Brown', 'password10', 'Sophia', 'Brown', 'sophia@example.com'),
-    ('Anjali Reddy', 'password11', 'Anjali', 'Reddy', 'anjali@example.com'),
-    ('Manoj Kumar', 'password12', 'Manoj', 'Kumar', 'manoj@example.com');
-
-
+    ('Amit Kumar', 'NqW6ChGFGrprgPiH2Cqz6WpAzqpt1f8OCoob5sWgiHI=', 'Amit', 'Kumar', 'amit@example.com'),
+    ('David Lee', 'rIRkr8TZYgMAsG/JNwiI0+0FqBzJephKvm/20yHNaW4=', 'David', 'Lee', 'david@example.com'),
+    ('Emily Johnson', 'FRFcHr99R0+a+WabPA+7eCH7hFScouJxfNhKgPzqB8M=', 'Emily', 'Johnson', 'emily@example.com'),
+    ('Harshitha Jonnagaddala', 'twKUz6iopOnLFYPkSZVG6GQCNZ5NsnI7Zpns6KIk9AI=', 'Harshitha', 'Jonnagaddala', 'harshi@example.com'),
+    ('John Smith', 'D+aHYWDfSkmVahA9TfCEp0yUp2BiUcbFrqpyj1dK11Y=', 'John', 'Smith', 'john@example.com'),
+    ('Michael Williams', '4scW5U7eROD69DBbxo5bNE0Z1roft6gfC2TeNGeu5F4=', 'Michael', 'Williams', 'michael@example.com'),
+    ('Priya Patel', '9PV1/o2snX1XxRgHG6j6NQQqZjF+WAZhIC5arWBUPDg=', 'Priya', 'Patel', 'priya@example.com'),
+    ('Rahul Mallidi', '0lgHo67lPb5MlkdE8fdbI6P2NH+jtCjMXcndD6JOSpo=', 'Rahul', 'Mallidi', 'rahul@example.com'),
+    ('Sindhujyothi Dutta', 'Ktl+yynsXcsJIVeBkp5Lq/9HUOmnLnLnR5BNzyOfd7Y=', 'Sindhujyothi', 'Dutta', 'sindhu@example.com'),
+    ('Sophia Brown', 'xni1BF0zX2xnD6NCeR98MDShvcxLIJ1MCRRKKZX75ac=', 'Sophia', 'Brown', 'sophia@example.com'),
+    ('Anjali Reddy', 'ZsaC1jslsyICnMDGV1yzO8kxYEmWcz5Vxx+0SBjI/6o=', 'Anjali', 'Reddy', 'anjali@example.com'),
+    ('Manoj Kumar', 'YHGngHnFeLVkv/XAohDzP6AcVWUNv7H2SYA1SMLMCsw=', 'Manoj', 'Kumar', 'manoj@example.com');
 
 
 INSERT INTO PersonPhone (userName, phone)
@@ -147,6 +160,19 @@ VALUES
     ('Harshitha Jonnagaddala', 'DONOR'),
     ('Anjali Reddy', 'BORROWER'),
     ('Manoj Kumar', 'BORROWER');
+
+INSERT INTO Act (userName, roleID)
+VALUES
+    ('Rahul Mallidi', 'STAFF'),
+    ('Sindhujyothi Dutta', 'STAFF'),
+    ('Harshitha Jonnagaddala', 'STAFF'),
+    ('Amit Kumar', 'STAFF'),
+    ('Priya Patel', 'STAFF'),
+    ('John Smith', 'STAFF'),
+    ('Emily Johnson', 'STAFF'),
+    ('Michael Williams', 'STAFF'),
+    ('Sophia Brown', 'STAFF'),
+    ('David Lee', 'STAFF');
 
 
 INSERT INTO Item (iDescription, photo, color, isNew, hasPieces, material, mainCategory, subCategory)
