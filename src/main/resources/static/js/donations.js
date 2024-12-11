@@ -230,7 +230,7 @@ async function handleSubmit(event) {
                 var username = donatedByElement.getAttribute("data-username");
                 document.getElementById('staffName').textContent = username || 'Staff';
                 window.location.href = `/donation?username=${username}`;
-            }, 2000); // 2-second delay before redirection
+            }, 1000); // 1-second delay before redirection
         } else {
             alert('Failed to record donation.');
         }

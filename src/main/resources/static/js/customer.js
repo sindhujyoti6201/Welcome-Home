@@ -38,15 +38,17 @@ async function fetchCustomerData() {
     }
 }
 
-async function addToCart(username, itemId) {
+async function addToCart(username, itemId, orderNotes) {
     try {
+        orderNotes = document.getElementById(`orderNote-${itemId}`).value;
+        console.log(orderNotes);
         const parsedItemId = parseInt(itemId, 10);
 
         // Sending request to add the item to the order
         const response = await fetch('/customer/addToCart', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: new URLSearchParams({username, itemId: parsedItemId})
+            body: new URLSearchParams({username, itemId: parsedItemId, orderNotes})
         });
 
         const message = await response.text();
@@ -64,7 +66,6 @@ async function addToCart(username, itemId) {
         alert('Failed to add item to cart.');
     }
 }
-
 
 function logout() {
     sessionStorage.removeItem('username');

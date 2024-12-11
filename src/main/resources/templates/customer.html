@@ -11,7 +11,7 @@
     <div class="nav-left">WelcomeHome</div>
     <div class="nav-right">
         <span id="userName">${username}</span>
-<!--        <button class="nav-btn" onclick="viewCart()">Cart</button>-->
+        <!--        <button class="nav-btn" onclick="viewCart()">Cart</button>-->
         <button class="nav-btn" onclick="orders()">OrderHistory</button>
         <button class="nav-btn" onclick="logout()">Logout</button>
     </div>
@@ -24,18 +24,20 @@
     <select name="mainCategory" onchange="loadSubcategories()">
         <option value="">Select Category</option>
         <option th:each="category : ${mainCategories}">
-                            th:value="${category}"
-                            th:text="${category}"
-                            th:selected="${param.mainCategory == category}"></option>
+            th:value="${category}"
+            th:text="${category}"
+            th:selected="${param.mainCategory == category}">
+        </option>
     </select>
 
-    <select name="subCategory" >
+    <select name="subCategory">
         <option value="">Select Sub Category</option>
         <option th:if="${subcategories}">
-                            th:each="subcategory : ${subcategories}"
-                            th:value="${subcategory}"
-                            th:text="${subcategory}"
-                            th:selected="${param.subCategory == subcategory}"></option>
+            th:each="subcategory : ${subcategories}"
+            th:value="${subcategory}"
+            th:text="${subcategory}"
+            th:selected="${param.subCategory == subcategory}">
+        </option>
     </select>
 
     <button type="submit">Search</button>
@@ -43,9 +45,8 @@
 
 <div class="product-container">
     <div th:each="item : ${items}" class="product-item">
-        <!-- Fetching the image from the backend using itemID -->
-        <img th:if="${item.photo != null and item.photo != ''}"
-             th:src="@{'/api/images/' + ${item.itemID}}"
+        <img th:if="${item.photo != null}"
+             th:src="'data:image/jpeg;base64,' + ${#strings.replace(item.photo, '\n', '')}"
              alt="Product Image"/>
 
         <h3>Item ID: <span th:text="${item.itemID}"></span></h3>
@@ -58,13 +59,18 @@
             <li>Category: <span th:text="${item.mainCategory}"></span></li>
             <li>Subcategory: <span th:text="${item.subCategory}"></span></li>
         </ul>
-                <button class="add-to-cart"
-                        th:attr="data-item-id=${item.itemID},
-                            onclick=|addToCart(document.getElementById('userName').textContent, this.getAttribute('data-item-id'))|">
-                    Add to Order
-                </button>
+        <label>Order Notes:</label>
+        <input type="text" th:id="'orderNote-' + ${item.itemID}" class="order-note"
+               placeholder="Add your note for this item"/>
+
+        <button class="add-to-cart"
+                th:attr="data-item-id=${item.itemID},
+                             onclick=|addToCart(document.getElementById('userName').textContent, this.getAttribute('data-item-id'), document.getElementById('orderNote-${item.itemID}').value)|">
+            Add to Order
+        </button>
     </div>
 </div>
 <script src="/js/customer.js"></script>
+
 </body>
 </html>

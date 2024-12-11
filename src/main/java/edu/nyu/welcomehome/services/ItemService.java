@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -18,6 +17,7 @@ public class ItemService {
     public ItemService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     public Map<String, Object> getCustomerData(String username) {
         String query = "SELECT * FROM person WHERE username = ?";
         List<Map<String, Object>> results = jdbcTemplate.queryForList(query, username);
@@ -89,13 +89,12 @@ public class ItemService {
         return rawResults;
     }
 
-    public boolean addItemToCart(String username, String itemId) {
+    public boolean addItemToCart(String username, String itemId, String orderNotes) {
         try {
             // Step 1: Create a new order in the 'Ordered' table with status 'INITIATED'
-            String createOrderQuery = "INSERT INTO Ordered (client, orderStatus, orderDate) VALUES (?, 'INITIATED', NOW())";
-            jdbcTemplate.update(createOrderQuery, username);
+            String createOrderQuery = "INSERT INTO Ordered (client, orderNotes, orderStatus, orderDate) VALUES (?,?, 'INITIATED', NOW())";
+            jdbcTemplate.update(createOrderQuery, username, orderNotes);
             //System.out.println("Order created for user: " + username);
-
 
             String getOrderIDQuery = "SELECT orderID FROM Ordered WHERE client = ? AND orderStatus = 'INITIATED' ORDER BY orderDate DESC, orderID DESC LIMIT 1";
             Integer newOrderId = jdbcTemplate.queryForObject(getOrderIDQuery, new Object[]{username}, Integer.class);
