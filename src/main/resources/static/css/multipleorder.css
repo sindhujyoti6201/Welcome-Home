@@ -1,0 +1,168 @@
+:root {
+    --color-primary: #2f2f2f;
+    --color-background: #e3d4c3;
+    --color-secondary: #c5b5a4;
+    --color-white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-primary);
+    margin: 0;
+    padding: 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 15px 25px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.nav-left {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-white);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-btn {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+}
+
+#multiOrderSection {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#multiOrderSection h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+}
+
+#multiOrderForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#itemsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#itemsContainer input {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 4px;
+    background-color: var(--color-white);
+    color: var(--color-primary);
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.remove-item-btn {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-item-btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+}
+
+button {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+}
+
+button[type="submit"] {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+button[type="submit"]:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+@media (max-width: 1024px) {
+    #multiOrderForm {
+        flex-direction: column;
+    }
+
+    #itemsContainer input {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    #multiOrderForm {
+        padding: 10px;
+    }
+
+    #itemsContainer input {
+        width: 100%;
+    }
+}
