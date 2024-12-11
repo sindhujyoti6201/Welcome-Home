@@ -100,17 +100,17 @@ public class MainController {
 
     @GetMapping("/analytics")
     public String getAnalyticsDashboard(Model model) {
-        System.out.println(1);
+
         model.addAttribute("clientsServed", analyticsService.getTotalClientsServed());
-        System.out.println(1);
+
         model.addAttribute("itemsDonated", analyticsService.getTotalItemsDonated());
         model.addAttribute("orderCompletionRate", analyticsService.getOrderCompletionRate());
         model.addAttribute("categoryDonations", analyticsService.getItemCategoryDonations());
-        System.out.println(1);
+
         model.addAttribute("topCategories", analyticsService.getTopDonatedCategories(5));
         model.addAttribute("volunteerContributions", analyticsService.getVolunteerContributions());
         model.addAttribute("processingTime", analyticsService.getAverageProcessingTime());
-        System.out.println(1);
+
         return "analytics";
     }
 
@@ -122,5 +122,10 @@ public class MainController {
     @GetMapping("/search-order")
     public String getSearchOrder() {
         return "search-order";
+    }
+
+    @GetMapping("/multipleorder")
+    public String multipleorder() {
+        return "multipleorder";
     }
 }

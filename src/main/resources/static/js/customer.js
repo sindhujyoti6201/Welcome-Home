@@ -67,6 +67,15 @@ async function addToCart(username, itemId, orderNotes) {
     }
 }
 
+function viewCart() {
+    window.location.href = '/multipleorder?username=' + encodeURIComponent(username);
+}
+
+function back() {
+    window.location.href = 'customer'
+}
+
+
 function logout() {
     sessionStorage.removeItem('username');
     window.location.href = '/customer-login';
@@ -124,5 +133,66 @@ async function loadSubcategories() {
         console.error('Failed to load subcategories:', error);
     }
 }
+
+function addItem() {
+    const itemsContainer = document.getElementById('itemsContainer');
+    const newItem = document.createElement('div');
+    newItem.className = 'order-item';
+    newItem.innerHTML = `
+        <input type="text" name="itemId[]" placeholder="Enter Item ID" required>
+        <button type="button" class="remove-item-btn" onclick="removeItem(this)">Remove</button>
+    `;
+    itemsContainer.appendChild(newItem);
+}
+
+function removeItem(button) {
+    const orderItem = button.parentElement;
+    orderItem.remove();
+}
+
+document.getElementById('multiOrderForm').addEventListener('submit', async function (event) {
+    event.preventDefault(); // Prevent form submission
+
+    const formData = new FormData(this);
+    const items = [];
+    const orderNote = document.querySelector('input[name="orderNote[]"]').value || '';  // Get the single order note
+
+    for (let pair of formData.entries()) {
+        if (pair[0] === 'itemId[]') items.push(pair[1]);
+    }
+
+    // Get username from the page
+    const username = document.getElementById('userName').textContent;
+
+    try {
+        const response = await fetch('/customer/placeMultiOrder', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                username,
+                items,
+                notes: orderNote  // Send the single order note
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Order placed successfully! Order ID: ' + result.orderId);
+            // Clear the form and reset
+            document.getElementById('itemsContainer').innerHTML = `
+                <input type="text" name="orderNote[]" placeholder="Enter Order Note">
+                <div class="order-item">
+                    <input type="text" name="itemId[]" placeholder="Enter Item ID" required>
+                    <button type="button" class="remove-item-btn" onclick="removeItem(this)">Remove</button>
+                </div>
+            `;
+        } else {
+            alert(`Failed to place order: ${result.errors ? result.errors.join(', ') : 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error placing multi-item order:', error);
+        alert('An error occurred while placing the order.');
+    }
+});
 
 fetchCustomerData();

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Home - Customer</title>
+    <link rel="stylesheet" href="/css/multipleorder.css">
+</head>
+<body>
+<nav>
+    <div class="nav-left">WelcomeHome</div>
+    <div class="nav-right">
+        <span id="userName">${username}</span>
+        <button class="nav-btn" onclick="back()">Back</button>
+    </div>
+</nav>
+
+<div id="multiOrderSection">
+    <h2>Place a Multi-Item Order</h2>
+    <form id="multiOrderForm">
+        <div id="itemsContainer">
+            <input type="text" name="orderNote[]" placeholder="Enter Order Note">
+            <div class="order-item">
+                <input type="text" name="itemId[]" placeholder="Enter Item ID" required>
+                <button type="button" class="remove-item-btn" onclick="removeItem(this)">Remove</button>
+            </div>
+        </div>
+        <button type="button" onclick="addItem()">Add Another Item</button>
+        <button type="submit">Submit Order</button>
+    </form>
+</div>
+
+<script src="/js/customer.js"></script>
+
+</body>
+</html>

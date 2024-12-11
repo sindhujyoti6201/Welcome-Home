@@ -113,4 +113,43 @@ public class ItemService {
             return false; // Return false if there's any failure
         }
     }
+
+    public Map<String, Object> validateAndPlaceOrder(String username, List<Map<String, String>> items, String orderNotes) {
+        Map<String, Object> response = new HashMap<>();
+        List<String> errors = new ArrayList<>();
+
+        // Check item availability
+        for (Map<String, String> item : items) {
+            String itemId = item.get("itemId");
+            String query = "SELECT COUNT(*) FROM ITEM WHERE itemID = ? AND itemID NOT IN (SELECT itemID FROM ITEMIN)";
+            int count = jdbcTemplate.queryForObject(query, new Object[]{itemId}, Integer.class);
+            if (count == 0) {
+                errors.add("Item ID " + itemId + " is not available.");
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            response.put("success", false);
+            response.put("errors", errors);
+            return response;
+        }
+
+        // Create a new order with a single order note
+        String createOrderQuery = "INSERT INTO Ordered (client, orderNotes, orderStatus, orderDate) VALUES (?, ? ,'INITIATED', NOW())";
+        jdbcTemplate.update(createOrderQuery, username, orderNotes);  // Insert the single order note
+
+        // Retrieve the order ID
+        String getOrderIDQuery = "SELECT orderID FROM Ordered WHERE client = ? AND orderStatus = 'INITIATED' ORDER BY orderDate DESC, orderID DESC LIMIT 1";
+        int orderId = jdbcTemplate.queryForObject(getOrderIDQuery, new Object[]{username}, Integer.class);
+
+        // Add items to ItemIn table
+        String addItemQuery = "INSERT INTO ItemIn (orderID, itemID) VALUES (?, ?)";
+        for (Map<String, String> item : items) {
+            jdbcTemplate.update(addItemQuery, orderId, item.get("itemId"));
+        }
+
+        response.put("success", true);
+        response.put("orderId", orderId);
+        return response;
+    }
 }
