@@ -76,9 +76,41 @@ public class ManagerService {
         }
     }
 
+    private boolean isStaffOrder(Long orderId) throws Exception {
+
+        String sql = "SELECT COUNT(*) as isStaffOrder " +
+                "FROM Ordered o " +
+                "JOIN Act a ON o.client = a.userName " +
+                "WHERE o.orderID = ? " +
+                "AND a.roleID = 'STAFF'";
+
+        try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("isStaffOrder") > 0;
+            }
+            return false;
+        }
+    }
     @Transactional
     public Map<String, Object> updateOrderStatus(Long orderId, String action) {
         try {
+            // Check if the order is from a staff member
+            if (isStaffOrder(orderId)) {
+                // Automatically cancel the order if placed by staff
+                Map<String, String> updateParams = Collections.singletonMap("orderID", orderId.toString());
+                String updateOrderSql = loadSqlFromFile("sql/manager/update-order-cancel.sql", updateParams);
+
+                try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+                     PreparedStatement stmt = conn.prepareStatement(updateOrderSql)) {
+                    stmt.executeUpdate();
+                }
+
+                return Map.of("error", "Orders from staff members cannot be processed");
+            }
+
             if ("start".equals(action)) {
                 String supervisor = getRandomUser("SUPERVISOR");
                 String deliveryAgent = getRandomUser("DELIVERY AGENT");
